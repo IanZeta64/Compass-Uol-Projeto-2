@@ -26,7 +26,7 @@ public class PetControllerImpl implements PetController{
 
   @Override
   public PetDTOResponse getById(String id) {
-    return null;
+    return petService.getById(id);
   }
 
   @Override

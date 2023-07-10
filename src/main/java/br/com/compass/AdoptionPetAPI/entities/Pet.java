@@ -1,6 +1,7 @@
 package br.com.compass.AdoptionPetAPI.entities;
 import br.com.compass.AdoptionPetAPI.dto.requests.PetDTORequest;
 import br.com.compass.AdoptionPetAPI.enums.Gender;
+import br.com.compass.AdoptionPetAPI.enums.Specie;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,6 +21,8 @@ public class Pet {
   private String id;
   private String name;
   private Gender gender;
+
+  private Specie specie;
   private Boolean isAdopted;
   private LocalDate birthDate;
   private Instant registerOn;
@@ -30,6 +33,7 @@ public class Pet {
   public Pet(PetDTORequest petDTORequest) {
     this.name = petDTORequest.name();
     this.gender = petDTORequest.gender();
+    this.specie = petDTORequest.specie();
     this.isAdopted = false;
     this.birthDate = petDTORequest.birthDate();
     this.registerOn = Instant.now();

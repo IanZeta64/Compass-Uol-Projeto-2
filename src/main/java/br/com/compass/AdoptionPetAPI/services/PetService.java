@@ -11,7 +11,7 @@ public interface PetService {
 
   public List<PetDTOResponse> findAll();
 
-  public PetDTOResponse getById(PetDTORequest petDTORequest);
+  public PetDTOResponse getById(String id);
 
   public PetDTOResponse searchByName(PetDTORequest petDTORequest);
 
