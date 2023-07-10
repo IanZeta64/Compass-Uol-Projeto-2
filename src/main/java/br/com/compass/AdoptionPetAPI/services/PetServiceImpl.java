@@ -29,7 +29,9 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public PetDTOResponse getById(String id) {
-  return null;
+    Pet petReturn = petRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
+    return new PetDTOResponse(petReturn.getId(), petReturn.getName(), petReturn.getGender(),
+      petReturn.getSpecie(), petReturn.getIsAdopted(), petReturn.getBirthDate());
   }
 
   @Override
