@@ -58,5 +58,9 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public void delete(String id) {
+    if (!petRepository.existsById(id)){
+      throw new RuntimeException("ERRO");
+    }
+    petRepository.deleteById(id);
   }
 }
