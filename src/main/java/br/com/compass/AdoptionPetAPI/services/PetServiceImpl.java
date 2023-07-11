@@ -31,8 +31,19 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public List<PetDTOResponse> findAll() {
-    return null;
+    List<Pet> pets = petRepository.findAll();
+    return pets.stream()
+            .map(pet -> new PetDTOResponse(
+                    pet.getId(),
+                    pet.getName(),
+                    pet.getGender(),
+                    pet.getSpecie(),
+                    pet.getIsAdopted(),
+                    pet.getBirthDate()
+            ))
+            .toList();
   }
+
 
   @Override
   public PetDTOResponse getById(String id) {
