@@ -2,8 +2,7 @@ package br.com.compass.AdoptionPetAPI.services;
 import br.com.compass.AdoptionPetAPI.dto.reponses.PetDTOResponse;
 import br.com.compass.AdoptionPetAPI.dto.requests.PetDTORequest;
 import br.com.compass.AdoptionPetAPI.entities.Pet;
-import br.com.compass.AdoptionPetAPI.exceptions.ListIsEmpty;
-import br.com.compass.AdoptionPetAPI.exceptions.PetIdNotFoundException;
+import br.com.compass.AdoptionPetAPI.exceptions.PetNotFoundException;
 import br.com.compass.AdoptionPetAPI.repositories.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,7 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public PetDTOResponse getById(String id) {
-    Pet petReturn = petRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
+    Pet petReturn = petRepository.findById(id).orElseThrow(() -> new PetNotFoundException(String.format("Pet not founded by id %s.", id)));
     return new PetDTOResponse(petReturn);
   }
 
@@ -42,9 +41,6 @@ public class PetServiceImpl implements PetService {
   public List<PetDTOResponse> searchByName(String petName) { //4
     var response = petRepository.findByName(petName);
     List<PetDTOResponse> petDTOResponseList = new ArrayList<>();
-    if(response.isEmpty()){
-      throw new ListIsEmpty("");
-    }
     response.forEach(pet -> petDTOResponseList.add(new PetDTOResponse(pet)));
     return petDTOResponseList;
   }
@@ -54,7 +50,7 @@ public class PetServiceImpl implements PetService {
 
     Optional<Pet> petReturn = petRepository.findById(id);
     if(petReturn.isEmpty()){
-      throw new PetIdNotFoundException("");
+      throw new PetNotFoundException("");
     }
     Pet petUpdate = petReturn.get();
     petUpdate.setName(petDTORequest.name());
