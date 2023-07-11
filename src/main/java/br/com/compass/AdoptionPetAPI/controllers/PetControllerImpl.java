@@ -21,7 +21,7 @@ public class PetControllerImpl implements PetController{
 
   @Override
   public List<PetDTOResponse> findAll() {
-    return null;
+    return petService.findAll();
   }
 
   @Override
