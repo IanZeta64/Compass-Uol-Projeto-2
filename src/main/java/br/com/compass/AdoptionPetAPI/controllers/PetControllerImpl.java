@@ -36,7 +36,7 @@ public class PetControllerImpl implements PetController{
 
   @Override
   public PetDTOResponse update(String id, PetDTORequest petDTORequest) {
-    return null;
+    return petService.update(id, petDTORequest);
   }
 
   @Override
