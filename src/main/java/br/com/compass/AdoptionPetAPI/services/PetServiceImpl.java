@@ -4,13 +4,16 @@ import br.com.compass.AdoptionPetAPI.dto.requests.PetDTORequest;
 import br.com.compass.AdoptionPetAPI.entities.Pet;
 import br.com.compass.AdoptionPetAPI.enums.Gender;
 import br.com.compass.AdoptionPetAPI.enums.Specie;
+import br.com.compass.AdoptionPetAPI.exceptions.ListIsEmpty;
 import br.com.compass.AdoptionPetAPI.repositories.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +40,15 @@ public class PetServiceImpl implements PetService {
   }
 
   @Override
-  public PetDTOResponse searchByName(PetDTORequest petDTORequest) { //4
-    return null;
+  public List<PetDTOResponse> searchByName(String petName) { //4
+    var response = petRepository.findByName(petName);
+    List<PetDTOResponse> petDTOResponseList = new ArrayList<>();
+    if(response.isEmpty()){
+      throw new ListIsEmpty();
+    }
+    response.forEach(pet -> petDTOResponseList.add(new PetDTOResponse(pet.getId(),
+            pet.getName(), pet.getGender(), pet.getSpecie(), pet.getIsAdopted(),pet.getBirthDate())));
+    return petDTOResponseList;
   }
 
   @Override
