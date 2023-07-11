@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 import java.time.LocalDate;
 
-@Document
+@Document(collection = "pet")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,7 +17,6 @@ import java.time.LocalDate;
 public class Pet {
 
   @Id
-  @Field("petId")
   private String id;
   private String name;
   private Gender gender;
