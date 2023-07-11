@@ -19,7 +19,9 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public PetDTOResponse create(PetDTORequest petDTORequest) { //3
-    return null;
+    Pet pet = new Pet(petDTORequest);
+    Pet petReturn = petRepository.save(pet);
+    return new PetDTOResponse(petReturn.getId(), petReturn.getName(), petReturn.getGender(), petReturn.getSpecie(), petReturn.getIsAdopted(), petReturn.getBirthDate());
   }
 
   @Override
