@@ -1,7 +1,10 @@
 package br.com.compass.AdoptionPetAPI.controllers;
 import br.com.compass.AdoptionPetAPI.dto.reponses.PetDTOResponse;
 import br.com.compass.AdoptionPetAPI.dto.requests.PetDTORequest;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -9,19 +12,19 @@ import java.util.List;
 public interface PetController {
 
   @PostMapping
-  public PetDTOResponse create(@RequestBody PetDTORequest petDTORequest);
+  public ResponseEntity<PetDTOResponse> create(@RequestBody PetDTORequest petDTORequest, UriComponentsBuilder builder);
   @GetMapping
-  public List<PetDTOResponse> findAll();
+  public ResponseEntity<List<PetDTOResponse>> findAll();
   @GetMapping("/{id}")
-  public PetDTOResponse getById(@PathVariable String id);
+  public ResponseEntity<PetDTOResponse> getById(@PathVariable String id);
 
   @GetMapping(params = "petName")
-  public List<PetDTOResponse> searchByName(@RequestParam String petName);
+  public ResponseEntity<List<PetDTOResponse>> searchByName(@RequestParam String petName);
 
   @PutMapping("/{id}")
-  public PetDTOResponse update(@PathVariable String id, @RequestBody PetDTORequest petDTORequest);
+  public ResponseEntity<PetDTOResponse> update(@PathVariable String id, @RequestBody PetDTORequest petDTORequest, UriComponentsBuilder builder);
 
   @DeleteMapping("/{id}")
-  public void delete(@PathVariable String id);
+  public ResponseEntity<Void> delete(@PathVariable String id);
 
 }
