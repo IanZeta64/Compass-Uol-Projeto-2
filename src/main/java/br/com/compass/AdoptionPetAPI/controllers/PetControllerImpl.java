@@ -16,7 +16,7 @@ public class PetControllerImpl implements PetController{
 
   @Override
   public PetDTOResponse create(PetDTORequest petDTORequest) {
-    return null;
+    return petService.create(petDTORequest);
   }
 
   @Override
