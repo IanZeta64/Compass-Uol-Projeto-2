@@ -41,5 +41,6 @@ public class PetControllerImpl implements PetController{
 
   @Override
   public void delete(String id) {
+    petService.delete(id);
   }
 }
