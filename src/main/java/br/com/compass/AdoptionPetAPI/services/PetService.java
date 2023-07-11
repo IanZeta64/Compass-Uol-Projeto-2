@@ -13,7 +13,7 @@ public interface PetService {
 
   public PetDTOResponse getById(String id);
 
-  public PetDTOResponse searchByName(PetDTORequest petDTORequest);
+  public List<PetDTOResponse> searchByName(String petName);
 
   public PetDTOResponse update(String id, PetDTORequest petDTORequest);
 

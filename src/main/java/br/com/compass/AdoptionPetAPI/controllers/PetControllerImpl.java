@@ -31,7 +31,7 @@ public class PetControllerImpl implements PetController{
 
   @Override
   public List<PetDTOResponse> searchByName(String petName) {
-    return null;
+    return petService.searchByName(petName);
   }
 
   @Override
