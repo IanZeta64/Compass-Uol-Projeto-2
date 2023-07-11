@@ -5,10 +5,12 @@ import br.com.compass.AdoptionPetAPI.entities.Pet;
 import br.com.compass.AdoptionPetAPI.enums.Gender;
 import br.com.compass.AdoptionPetAPI.enums.Specie;
 import br.com.compass.AdoptionPetAPI.exceptions.ListIsEmpty;
+import br.com.compass.AdoptionPetAPI.exceptions.PetIdNotFoundException;
 import br.com.compass.AdoptionPetAPI.repositories.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,20 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public PetDTOResponse update(String id, PetDTORequest petDTORequest) { //5
-    return null;
+
+    Optional<Pet> petReturn = petRepository.findById(id);
+    if(petReturn.isEmpty()){
+      throw new PetIdNotFoundException();
+    }
+    Pet petUpdate = petReturn.get();
+    petUpdate.setName(petDTORequest.name());
+    petUpdate.setGender(petDTORequest.gender());
+    petUpdate.setSpecie(petDTORequest.specie());
+    petUpdate.setBirthDate(petDTORequest.birthDate());
+    petUpdate.setModifiedOn(Instant.now());
+    petRepository.save(petUpdate);
+    return new PetDTOResponse(petUpdate.getId(), petUpdate.getName(),
+            petUpdate.getGender(), petUpdate.getSpecie(), petUpdate.getIsAdopted(), petUpdate.getBirthDate());
   }
 
   @Override
