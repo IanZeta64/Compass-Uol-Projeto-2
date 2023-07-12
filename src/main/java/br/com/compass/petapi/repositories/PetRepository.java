@@ -1,5 +1,5 @@
-package br.com.compass.AdoptionPetAPI.repositories;
-import br.com.compass.AdoptionPetAPI.entities.Pet;
+package br.com.compass.petapi.repositories;
+import br.com.compass.petapi.entities.Pet;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package br.com.compass.AdoptionPetAPI.exceptions;
+package br.com.compass.petapi.exceptions;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

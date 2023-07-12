@@ -1,6 +1,6 @@
-package br.com.compass.AdoptionPetAPI.controllers;
-import br.com.compass.AdoptionPetAPI.dto.reponses.PetDTOResponse;
-import br.com.compass.AdoptionPetAPI.dto.requests.PetDTORequest;
+package br.com.compass.petapi.controllers;
+import br.com.compass.petapi.dto.reponses.PetDTOResponse;
+import br.com.compass.petapi.dto.requests.PetDTORequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;

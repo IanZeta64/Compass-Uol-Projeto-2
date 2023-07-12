@@ -1,7 +1,7 @@
-package br.com.compass.AdoptionPetAPI.dto.reponses;
-import br.com.compass.AdoptionPetAPI.entities.Pet;
-import br.com.compass.AdoptionPetAPI.enums.Gender;
-import br.com.compass.AdoptionPetAPI.enums.Specie;
+package br.com.compass.petapi.dto.reponses;
+import br.com.compass.petapi.entities.Pet;
+import br.com.compass.petapi.enums.Gender;
+import br.com.compass.petapi.enums.Specie;
 
 import java.time.LocalDate;
 

@@ -1,4 +1,4 @@
-package br.com.compass.AdoptionPetAPI.exceptions;
+package br.com.compass.petapi.exceptions;
 
 public class DuplicatedPetException extends RuntimeException {
     public DuplicatedPetException(String message) {

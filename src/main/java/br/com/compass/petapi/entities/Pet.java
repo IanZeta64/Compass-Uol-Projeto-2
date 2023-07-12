@@ -1,7 +1,7 @@
-package br.com.compass.AdoptionPetAPI.entities;
-import br.com.compass.AdoptionPetAPI.dto.requests.PetDTORequest;
-import br.com.compass.AdoptionPetAPI.enums.Gender;
-import br.com.compass.AdoptionPetAPI.enums.Specie;
+package br.com.compass.petapi.entities;
+import br.com.compass.petapi.dto.requests.PetDTORequest;
+import br.com.compass.petapi.enums.Gender;
+import br.com.compass.petapi.enums.Specie;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
