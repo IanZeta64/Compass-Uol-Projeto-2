@@ -2,6 +2,8 @@ package br.com.compass.petapi.services;
 import br.com.compass.petapi.dto.reponses.PetDTOResponse;
 import br.com.compass.petapi.dto.requests.PetDTORequest;
 import br.com.compass.petapi.entities.Pet;
+import br.com.compass.petapi.enums.Gender;
+import br.com.compass.petapi.enums.Specie;
 import br.com.compass.petapi.exceptions.PetNotFoundException;
 import br.com.compass.petapi.exceptions.*;
 import br.com.compass.petapi.repositories.PetRepository;
@@ -45,7 +47,7 @@ public class PetServiceImpl implements PetService {
   @Override
   public PetDTOResponse update(String id, PetDTORequest request) {
     Pet petUpdate = petRepository.findById(id).map(pet -> new Pet(
-      pet.getId(), request.name(), request.gender(), request.specie(), pet.getIsAdopted(),
+      pet.getId(), request.name(), Gender.valueOf(request.gender()), Specie.valueOf(request.specie()), pet.getIsAdopted(),
         request.birthDate(), pet.getRegisterOn(), Instant.now())
       ).orElseThrow(() -> new PetNotFoundException(String.format("Pet not founded by id %s. Cannot update pet.", id)));
     return new PetDTOResponse(petRepository.save(petUpdate));
