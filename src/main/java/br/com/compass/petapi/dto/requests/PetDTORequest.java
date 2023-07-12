@@ -1,6 +1,4 @@
 package br.com.compass.petapi.dto.requests;
-import br.com.compass.petapi.enums.Gender;
-import br.com.compass.petapi.enums.Specie;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
