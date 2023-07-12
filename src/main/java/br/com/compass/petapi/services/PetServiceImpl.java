@@ -1,10 +1,10 @@
-package br.com.compass.AdoptionPetAPI.services;
-import br.com.compass.AdoptionPetAPI.dto.reponses.PetDTOResponse;
-import br.com.compass.AdoptionPetAPI.dto.requests.PetDTORequest;
-import br.com.compass.AdoptionPetAPI.entities.Pet;
-import br.com.compass.AdoptionPetAPI.exceptions.PetNotFoundException;
-import br.com.compass.AdoptionPetAPI.exceptions.*;
-import br.com.compass.AdoptionPetAPI.repositories.PetRepository;
+package br.com.compass.petapi.services;
+import br.com.compass.petapi.dto.reponses.PetDTOResponse;
+import br.com.compass.petapi.dto.requests.PetDTORequest;
+import br.com.compass.petapi.entities.Pet;
+import br.com.compass.petapi.exceptions.PetNotFoundException;
+import br.com.compass.petapi.exceptions.*;
+import br.com.compass.petapi.repositories.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.Instant;

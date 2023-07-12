@@ -1,7 +1,7 @@
-package br.com.compass.AdoptionPetAPI.services;
+package br.com.compass.petapi.services;
 
-import br.com.compass.AdoptionPetAPI.dto.reponses.PetDTOResponse;
-import br.com.compass.AdoptionPetAPI.dto.requests.PetDTORequest;
+import br.com.compass.petapi.dto.reponses.PetDTOResponse;
+import br.com.compass.petapi.dto.requests.PetDTORequest;
 
 
 import java.util.List;
