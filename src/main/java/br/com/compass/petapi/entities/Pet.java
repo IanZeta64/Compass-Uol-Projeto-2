@@ -29,8 +29,8 @@ public class Pet {
 
   public Pet(PetDTORequest petDTORequest) {
     this.name = petDTORequest.name();
-    this.gender = petDTORequest.gender();
-    this.specie = petDTORequest.specie();
+    this.gender = Gender.valueOf(petDTORequest.gender());
+    this.specie = Specie.valueOf(petDTORequest.specie());
     this.isAdopted = false;
     this.birthDate = petDTORequest.birthDate();
     this.registerOn = Instant.now();
