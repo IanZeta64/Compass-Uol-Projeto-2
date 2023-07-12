@@ -8,10 +8,7 @@ import br.com.compass.AdoptionPetAPI.repositories.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -19,24 +16,19 @@ public class PetServiceImpl implements PetService {
   private final PetRepository petRepository;
 
   @Override
-  public PetDTOResponse create(PetDTORequest petDTORequest) {
-    String petName = petDTORequest.name();
-    List<Pet> existingPets = petRepository.findByName(petName);
-    if (!existingPets.isEmpty()) {
-      throw new DuplicatePetException("A pet with the same name already exists: " + petName);
+  public PetDTOResponse create(PetDTORequest request) {
+    if(Boolean.TRUE.equals(petRepository.existsByNameAndBirthDate(request.name(), request.birthDate()))){
+      throw new DuplicatedPetException(String.format("A pet with name %s and birth date %s already exists.",
+        request.name(), request.birthDate()));
     }
-    Pet pet = new Pet(petDTORequest);
-    Pet petReturn = petRepository.save(pet);
-    return new PetDTOResponse(petReturn);
+    Pet petSaved = petRepository.save(new Pet(request));
+    return new PetDTOResponse(petSaved);
   }
-
 
   @Override
   public List<PetDTOResponse> findAll() {
-    List<Pet> pets = petRepository.findAll();
-    return pets.stream().map(PetDTOResponse::new).toList();
+    return petRepository.findAll().stream().map(PetDTOResponse::new).toList();
   }
-
 
   @Override
   public PetDTOResponse getById(String id) {
@@ -45,38 +37,35 @@ public class PetServiceImpl implements PetService {
     return new PetDTOResponse(petReturn);
   }
 
-
   @Override
-  public List<PetDTOResponse> searchByName(String petName) { //4
-    var response = petRepository.findByName(petName);
-    List<PetDTOResponse> petDTOResponseList = new ArrayList<>();
-    response.forEach(pet -> petDTOResponseList.add(new PetDTOResponse(pet)));
-    return petDTOResponseList;
+  public List<PetDTOResponse> searchByName(String name) {
+    return petRepository.findByNameIgnoreCaseContaining(name).stream().map(PetDTOResponse::new).toList();
   }
 
   @Override
-  public PetDTOResponse update(String id, PetDTORequest petDTORequest) {
-    Optional<Pet> petReturn = petRepository.findById(id);
-    if (petReturn.isEmpty()) {
-      throw new PetNotFoundException(String.format("Pet not founded by id %s. Cannot update pet.", id));
-    }
-
-    Pet petUpdate = petReturn.get();
-    petUpdate.setName(petDTORequest.name());
-    petUpdate.setGender(petDTORequest.gender());
-    petUpdate.setSpecie(petDTORequest.specie());
-    petUpdate.setBirthDate(petDTORequest.birthDate());
-    petUpdate.setModifiedOn(Instant.now());
-
+  public PetDTOResponse update(String id, PetDTORequest request) {
+    Pet petUpdate = petRepository.findById(id).map(pet -> new Pet(
+      pet.getId(), request.name(), request.gender(), request.specie(), pet.getIsAdopted(),
+        request.birthDate(), pet.getRegisterOn(), Instant.now())
+      ).orElseThrow(() -> new PetNotFoundException(String.format("Pet not founded by id %s. Cannot update pet.", id)));
     return new PetDTOResponse(petRepository.save(petUpdate));
   }
 
-
   @Override
   public void delete(String id) {
-    if (!petRepository.existsById(id)){
-      throw new PetNotFoundException(String.format("Pet not founded by id %s. Cannot delete pet.", id));
-    }
-    petRepository.deleteById(id);
+    petRepository.findById(id).ifPresentOrElse(pet -> petRepository.deleteById(id),
+      () -> {
+        throw new PetNotFoundException(String.format("Pet not founded by id %s. Cannot delete pet.", id));
+      });
+  }
+
+  @Override
+  public PetDTOResponse patchStatus(String id) {
+    Pet petUpdate = petRepository.findById(id).map(pet -> {
+        pet.setAdopted();
+        return pet;
+      }).orElseThrow(() -> new PetNotFoundException(String.format("Pet not found by id %s. Cannot update pet adoption.", id)));
+    return new PetDTOResponse(petRepository.save(petUpdate));
+
   }
 }

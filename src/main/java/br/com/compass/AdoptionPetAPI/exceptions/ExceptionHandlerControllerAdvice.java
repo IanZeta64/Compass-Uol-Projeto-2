@@ -24,13 +24,12 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
     HttpStatus httpStatus = HttpStatus.NOT_FOUND;
     return new ResponseEntity<>(errorMessage, httpStatus);
   }
-//  @ExceptionHandler(DuplicatedPetException.class)
-//  public ResponseEntity<Object> handleDuplicatedPetException(DuplicatedPetException ex) {
-//    String errorMessage = ex.getMessage();
-//    HttpStatus httpStatus = HttpStatus.CONFLICT;
-//    return new ResponseEntity<>(errorMessage, httpStatus);
-//  }
-
+  @ExceptionHandler(DuplicatedPetException.class)
+  public ResponseEntity<Object> handleDuplicatedPetException(DuplicatedPetException ex) {
+    String errorMessage = ex.getMessage();
+    HttpStatus httpStatus = HttpStatus.CONFLICT;
+    return new ResponseEntity<>(errorMessage, httpStatus);
+  }
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(

@@ -5,13 +5,11 @@ import br.com.compass.AdoptionPetAPI.enums.Specie;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 import java.time.LocalDate;
 
 @Document(collection = "pet")
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pet {
@@ -36,5 +34,9 @@ public class Pet {
     this.isAdopted = false;
     this.birthDate = petDTORequest.birthDate();
     this.registerOn = Instant.now();
+  }
+
+  public void setAdopted() {
+    this.isAdopted = !this.isAdopted;
   }
 }
