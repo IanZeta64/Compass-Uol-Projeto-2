@@ -1,17 +1,15 @@
-package br.com.compass.AdoptionPetAPI.entities;
-import br.com.compass.AdoptionPetAPI.dto.requests.PetDTORequest;
-import br.com.compass.AdoptionPetAPI.enums.Gender;
-import br.com.compass.AdoptionPetAPI.enums.Specie;
+package br.com.compass.petapi.entities;
+import br.com.compass.petapi.dto.requests.PetDTORequest;
+import br.com.compass.petapi.enums.Gender;
+import br.com.compass.petapi.enums.Specie;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 import java.time.LocalDate;
 
 @Document(collection = "pet")
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pet {
@@ -36,5 +34,9 @@ public class Pet {
     this.isAdopted = false;
     this.birthDate = petDTORequest.birthDate();
     this.registerOn = Instant.now();
+  }
+
+  public void setAdopted() {
+    this.isAdopted = !this.isAdopted;
   }
 }
