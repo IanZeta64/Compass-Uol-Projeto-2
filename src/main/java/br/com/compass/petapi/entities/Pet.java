@@ -2,20 +2,23 @@ package br.com.compass.petapi.entities;
 import br.com.compass.petapi.dto.requests.PetDTORequest;
 import br.com.compass.petapi.enums.Gender;
 import br.com.compass.petapi.enums.Specie;
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.UUID;
 
-@Document(collection = "pet")
+@Entity
+@Table(name="pet_table")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pet {
 
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
+
   private String name;
   private Gender gender;
 
@@ -38,5 +41,6 @@ public class Pet {
 
   public void setAdopted() {
     this.isAdopted = !this.isAdopted;
+    this.modifiedOn = Instant.now();
   }
 }
