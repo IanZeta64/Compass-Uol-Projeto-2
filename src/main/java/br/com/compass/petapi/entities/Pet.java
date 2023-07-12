@@ -21,14 +21,11 @@ public class Pet {
 
   private String name;
   private Gender gender;
-
   private Specie specie;
   private Boolean isAdopted;
   private LocalDate birthDate;
   private Instant registerOn;
   private Instant modifiedOn;
-  //private AdoptionDocument document;
-  //Tutor tutor;
 
   public Pet(PetDTORequest petDTORequest) {
     this.name = petDTORequest.name();
