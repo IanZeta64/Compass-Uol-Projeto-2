@@ -145,6 +145,62 @@ class PetServiceImplTest {
 
     verify(petRepository).findById(any(UUID.class));
   }
+    @ParameterizedTest
+    @MethodSource("generateDTORequests")
+    @DisplayName("Test find all")
+    void mustTestFindAllMethod(PetDTORequest request){
+        Pet pet = new Pet(request);
+        doReturn(List.of(pet)).when(petRepository).findAll();
+        List<PetDTOResponse> responseList = petService.findAll();
+        assertEqualsMethodList(request, responseList);
+        verify(petRepository).findAll();
+    }
+
+    @ParameterizedTest
+    @MethodSource("generateDTORequests")
+    @DisplayName("Test delete by ID")
+    void mustTestDeleteMethod(PetDTORequest request){
+        Pet pet = returnPetWithIdFromRequest(request);
+        doReturn(Optional.of(pet)).when(petRepository).findById(any(UUID.class));
+        doNothing().when(petRepository).delete(any(Pet.class));
+        petService.delete(pet.getId().toString());
+        assertDoesNotThrow(() -> PetNotFoundException.class, String.format("Pet not founded by id %s. Cannot delete pet.", pet.getId()));
+        verify(petRepository).delete(any(Pet.class));
+    }
+
+    @ParameterizedTest
+    @MethodSource("generateDTORequests")
+    @DisplayName("Test throw exception on Delete Method")
+    void mustThrowExceptionOnDeleteMethod(PetDTORequest request){
+        Pet pet = returnPetWithIdFromRequest(request);
+        doThrow(PetNotFoundException.class).when(petRepository).findById(any(UUID.class));
+        assertThrows(PetNotFoundException.class, () -> petService.delete(pet.getId().toString()));
+        verify(petRepository).findById(any(UUID.class));
+    }
+    @ParameterizedTest
+    @MethodSource("generateDTORequests")
+    @DisplayName("Test patch status")
+    void mustTestPatchStatus(PetDTORequest request){
+        Pet pet = returnPetWithIdFromRequest(request);
+        assertFalse(pet.getIsAdopted());
+        doReturn(Optional.of(pet)).when(petRepository).findById(any(UUID.class));
+        doReturn(pet).when(petRepository).save(any(Pet.class));
+        PetDTOResponse response = petService.patchStatus(pet.getId().toString());
+        assertEqualsMethod(request, response);
+        assertTrue(response.isAdopted());
+        assertDoesNotThrow(() -> PetNotFoundException.class, String.format("Pet not founded by id %s. Cannot delete pet.", pet.getId()));
+        verify(petRepository).findById(any(UUID.class));
+        verify(petRepository).save(any(Pet.class));
+    }
+    @ParameterizedTest
+    @MethodSource("generateDTORequests")
+    @DisplayName("Test throw Exception patch status")
+    void mustThrowExceptionOnPatchStatus(PetDTORequest request){
+        String id = returnPetWithIdFromRequest(request).getId().toString();
+        doThrow(PetNotFoundException.class).when(petRepository).findById(any(UUID.class));
+        assertThrows(PetNotFoundException.class, () -> petService.patchStatus(id));
+        verify(petRepository).findById(any(UUID.class));
+    }
 
 
   private static Stream<Arguments> generateDTORequests(){
