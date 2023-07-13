@@ -24,7 +24,5 @@ public record PetDTORequest(
         @PastOrPresent(message = "The birth date should be in the past or present")
         LocalDate birthDate)
 {
-        public Pet toEntity() {
-                return new Pet(this);
-        }
+
 }

@@ -24,8 +24,8 @@ public class PetServiceImpl implements PetService {
   public PetDTOResponse create(PetDTORequest request) {
     log.info("SERVICE - creating pet");
     if(Boolean.TRUE.equals(petRepository.existsByNameAndBirthDate(request.name(), request.birthDate()))){
-      throw new DuplicatedPetException(String.format("A pet with name %s and birth date %s already exists.",
-        request.name(), request.birthDate()));
+    throw new DuplicatedPetException(String.format("A pet with name %s and birth date %s already exists.",
+      request.name(), request.birthDate()));
     }
     log.info("REPOSITORY - creating pet");
     Pet petSaved = petRepository.save(new Pet(request));
@@ -66,10 +66,8 @@ public class PetServiceImpl implements PetService {
   @Override
   public void delete(String id) {
     log.info("SERVICE - deleting pet");
-    petRepository.findById(UUID.fromString(id)).ifPresentOrElse(pet -> petRepository.deleteById(UUID.fromString(id)),
-      () -> {
-        throw new PetNotFoundException(String.format("Pet not founded by id %s. Cannot delete pet.", id));
-      });
+    Pet pet = petRepository.findById(UUID.fromString(id)).orElseThrow(() -> new PetNotFoundException(String.format("Pet not founded by id %s. Cannot delete pet.", id)));
+    petRepository.delete(pet);
   }
 
   @Override
@@ -77,7 +75,6 @@ public class PetServiceImpl implements PetService {
     log.info("SERVICE - updating isAdopted status");
     Pet petUpdate = petRepository.findById(UUID.fromString(id)).map(pet -> {
         pet.setAdopted();
-
         return pet;
       }).orElseThrow(() -> new PetNotFoundException(String.format("Pet not found by id %s. Cannot update pet adoption.", id)));
     log.info("SERVICE - returning updated pet to CONTROLLER");
