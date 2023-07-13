@@ -1,4 +1,5 @@
 package br.com.compass.petapi.dto.requests;
+import br.com.compass.petapi.entities.Pet;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -23,4 +24,7 @@ public record PetDTORequest(
         @PastOrPresent(message = "The birth date should be in the past or present")
         LocalDate birthDate)
 {
+        public Pet toEntity() {
+                return new Pet(this);
+        }
 }
