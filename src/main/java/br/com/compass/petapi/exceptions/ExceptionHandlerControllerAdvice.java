@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,33 +22,47 @@ import java.util.stream.Stream;
 public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHandler {
   public static final String METHOD_ARGUMENT_NOT_VALID_ERROR_MESSAGE = "Invalid Field: '%s'. Cause: '%s'.";
 
-  @ExceptionHandler(PetNotFoundException.class)
-  public ResponseEntity<Object> handlePetNotFoundExceptions(PetNotFoundException ex) {
-    String errorMessage = ex.getMessage();
+  @ExceptionHandler(value = { PetNotFoundException.class })
+  protected ResponseEntity<Object> handlePetNotFoundExceptions(PetNotFoundException ex) {
     HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-    return new ResponseEntity<>(errorMessage, httpStatus);
+    ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), httpStatus.getReasonPhrase(), List.of(ex.getMessage()));
+    return new ResponseEntity<>(errorResponse, httpStatus);
   }
+
   @ExceptionHandler(DuplicatedPetException.class)
   public ResponseEntity<Object> handleDuplicatedPetException(DuplicatedPetException ex) {
-    String errorMessage = ex.getMessage();
     HttpStatus httpStatus = HttpStatus.CONFLICT;
-    return new ResponseEntity<>(errorMessage, httpStatus);
+    ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), httpStatus.getReasonPhrase(),  List.of(ex.getMessage()));
+    return new ResponseEntity<>(errorResponse, httpStatus);
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  protected ResponseEntity<Object> handleInvalidUUID(IllegalArgumentException ex, WebRequest request) {
+    HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+    ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), httpStatus.getReasonPhrase(),  List.of(ex.getMessage()));
+    return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
     MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status,
     WebRequest request) {
-    String errorMessage = getErrorMessages(ex.getBindingResult());
+    List<String> errorMessageList = getErrorMessages(ex.getBindingResult());
     HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-    return new ResponseEntity<>(errorMessage, httpStatus);
+    ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), httpStatus.getReasonPhrase(), errorMessageList);
+    return new ResponseEntity<>(errorResponse, httpStatus);
   }
 
-  private String getErrorMessages(BindingResult bindingResult) {
-    return Stream.concat(
-      bindingResult.getFieldErrors().stream().map(this::getMethodArgumentNotValidErrorMessage),
-      bindingResult.getGlobalErrors().stream().map(this::getMethodArgumentNotValidErrorMessage)
-    ).collect(Collectors.joining(", "));
+  private List<String> getErrorMessages(BindingResult bindingResult) {
+    List<String> errorMessages = new ArrayList<>();
+
+    bindingResult.getFieldErrors().forEach(error ->
+      errorMessages.add(getMethodArgumentNotValidErrorMessage(error)));
+
+    bindingResult.getGlobalErrors().forEach(error ->
+      errorMessages.add(getMethodArgumentNotValidErrorMessage(error)));
+
+    return errorMessages;
   }
 
   private String getMethodArgumentNotValidErrorMessage(FieldError error) {
