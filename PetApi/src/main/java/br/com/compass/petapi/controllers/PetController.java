@@ -30,7 +30,7 @@ public interface PetController {
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable String id);
 
-  @PatchMapping("/{id}")
-  public ResponseEntity<PetDTOResponse> patchStatus(@PathVariable String id, UriComponentsBuilder builder);
+  @PatchMapping("/alterAdoptedStatus/{id}")
+  public ResponseEntity<PetDTOResponse> patchStatus(@PathVariable String id);
 
 }

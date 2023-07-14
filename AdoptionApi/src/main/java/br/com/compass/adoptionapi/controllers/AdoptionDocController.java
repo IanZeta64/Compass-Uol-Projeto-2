@@ -1,7 +1,7 @@
 package br.com.compass.adoptionapi.controllers;
 
 import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
-import br.com.compass.adoptionapi.dto.requests.responses.AdoptionDocDTOResponse;
+import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

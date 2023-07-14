@@ -1,4 +1,5 @@
 package br.com.compass.adoptionapi.entities;
+import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,4 +21,11 @@ public class AdoptionDoc {
   private UUID petId;
   private String tutorName;
   private Instant registeredOn;
+  private  Instant modifiedOn;
+
+  public AdoptionDoc(AdoptionDocDTORequest request) {
+    this.petId = UUID.fromString(request.petId());
+    this.tutorName = request.tutorName();
+    this.registeredOn = Instant.now();
+  }
 }

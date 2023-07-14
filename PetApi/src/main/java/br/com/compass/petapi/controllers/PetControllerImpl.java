@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -68,10 +69,13 @@ public class PetControllerImpl implements PetController{
   }
 
   @Override
-  public ResponseEntity<PetDTOResponse> patchStatus(String id, UriComponentsBuilder builder) {
+  public ResponseEntity<PetDTOResponse> patchStatus(String id) {
     log.info("CONTROLLER - updating isAdopted status");
     var response = petService.patchStatus(id);
-    var uri = builder.path(PATH_ID).buildAndExpand(response.id()).toUri();
+    var uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+      .pathSegment(String.valueOf(response.id()))
+      .build()
+      .toUri();
     log.info("CONTROLLER - returning updated pet");
     return ResponseEntity.ok().location(uri).body(response);
   }
