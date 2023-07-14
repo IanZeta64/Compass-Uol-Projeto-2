@@ -34,6 +34,7 @@ public class PetControllerImpl implements PetController{
 
   @Override
   public ResponseEntity<List<PetDTOResponse>> findAllNotAdopted() {
+    log.info("CONTROLLER - finding all not adopoted pets");
     return ResponseEntity.ok(petService.findAllNotAdopted());
   }
 

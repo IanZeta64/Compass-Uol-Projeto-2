@@ -126,18 +126,6 @@ class PetControllerImplTest {
         verify(petService).searchByName(anyString());
     }
 
-//  @ParameterizedTest
-//  @MethodSource("generateDTORequests")
-//  @DisplayName("CONTROLLER - Must return bad request on get pet by id")
-//  void mustReturnBadRequestGetPetById(PetDTORequest request) throws Exception {
-//    var response = returnPetDTOResponseFromRequest(request);
-//    String id = String.valueOf(Math.random());
-//    doReturn(response).when(petService).getById(anyString());
-//    this.mockMvc.perform(get("/api/v1/pet/{id}", id)).
-//      andDo(print()).andExpect(status().isBadRequest());
-//    verify(petService).getById(anyString());
-//  }
-
   @ParameterizedTest
   @MethodSource("generateId")
   @DisplayName("CONTROLLER - Test update pet")
