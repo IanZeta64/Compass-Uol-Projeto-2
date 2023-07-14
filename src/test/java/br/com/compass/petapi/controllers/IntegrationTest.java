@@ -157,6 +157,125 @@ public class IntegrationTest {
       )
     );
   }
+  @ParameterizedTest
+  @MethodSource("generateDTORequests")
+  @DisplayName("INTEGRATION - must delete a pet and testing 404 error")
+  void mustDeletePetAndTest404ErrorOnDelete(PetDTORequest request) throws Exception{
+    String requestJson = mapper.writeValueAsString(request);
+
+    MvcResult result = mockMvc.perform(post("/api/v1/pet")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestJson))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name").value(request.name())).andReturn();
+
+    String id = new JSONObject(result.getResponse().getContentAsString()).getString("id");
+
+    mockMvc.perform(get("/api/v1/pet/{id}", id))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(id));
+
+    mockMvc.perform(delete("/api/v1/pet/{id}", id))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+    mockMvc.perform(get("/api/v1/pet/{id}", id))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+    mockMvc.perform(delete("/api/v1/pet/{id}", UUID.randomUUID().toString()))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+  }
+  @ParameterizedTest
+  @MethodSource("generateDTORequests")
+  @DisplayName("INTEGRATION - must patch isAdopted a new pet and test findAllNotAdopted")
+  void mustPatchIsAdoptedStatusAndTestFindAllNotAdopted(PetDTORequest request) throws Exception {
+    String requestJson = mapper.writeValueAsString(request);
+
+    MvcResult result = mockMvc.perform(post("/api/v1/pet")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestJson))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name").value(request.name())).andReturn();
+
+
+    String id = new JSONObject(result.getResponse().getContentAsString()).getString("id");
+    mockMvc.perform(get("/api/v1/pet/{id}", id))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(id));
+
+    mockMvc.perform(patch("/api/v1/pet/{id}", id))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isAdopted").value(true));
+
+    mockMvc.perform(get("/api/v1/pet/notAdopted"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isEmpty());
+  }
+  @ParameterizedTest
+  @MethodSource("generateDTORequests")
+  @DisplayName("INTEGRATION - must return 404 error for Patch Status Update")
+  void mustReturn404ErrorOnPatchStatusUpdate(PetDTORequest request) throws Exception {
+    mockMvc.perform(patch("/api/v1/pet/{id}", UUID.randomUUID().toString()))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+  }
+
+  @ParameterizedTest
+  @MethodSource("generateDTORequests")
+  @DisplayName("INTEGRATION - must update a pet")
+  void mustUpdatePet(PetDTORequest request) throws Exception{
+    String requestJson = mapper.writeValueAsString(request);
+    PetDTORequest requestToUpdate = new PetDTORequest("Growlithe", "FEMALE", "DOG", LocalDate.of(2021, 10, 30));
+    String updatedJson = mapper.writeValueAsString(requestToUpdate);
+
+    MvcResult result = mockMvc.perform(post("/api/v1/pet")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestJson))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name").value(request.name())).andReturn();
+
+    String id = new JSONObject(result.getResponse().getContentAsString()).getString("id");
+
+    mockMvc.perform(get("/api/v1/pet/{id}", id))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(id));
+
+
+    MvcResult updatedResult = mockMvc.perform(put("/api/v1/pet/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(updatedJson))
+            .andDo(print())
+            .andExpect((status().isOk())).andReturn();
+
+    String name = new JSONObject(updatedResult.getResponse().getContentAsString()).getString("name");
+
+    mockMvc.perform(get("/api/v1/pet/{id}", id))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value(name));
+  }
+  @ParameterizedTest
+  @MethodSource("generateDTORequests")
+  @DisplayName("INTEGRATION - must return error 404 to nonexistent pet update")
+  void mustReturn404ErrorForNonExistentPetUpdate(PetDTORequest request) throws Exception{
+    String requestJson = mapper.writeValueAsString(request);
+    mockMvc.perform(put("/api/v1/pet/{id}", UUID.randomUUID().toString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestJson))
+            .andDo(print())
+            .andExpect((status().isNotFound()));
+
+  }
 
   public static Stream<Arguments> generateId() {
     return Stream.of(
