@@ -1,6 +1,7 @@
 package br.com.compass.petapi.controllers;
 import br.com.compass.petapi.dto.reponses.PetDTOResponse;
 import br.com.compass.petapi.dto.requests.PetDTORequest;
+import br.com.compass.petapi.dummy.DummyPet;
 import br.com.compass.petapi.enums.Gender;
 import br.com.compass.petapi.enums.Specie;
 import br.com.compass.petapi.services.PetServiceImpl;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -51,10 +50,10 @@ class PetControllerImplTest {
     }
 
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("CONTROLLER - Test for create's controller")
     void mustTestCreateOnController(PetDTORequest request) throws Exception {
-        PetDTOResponse response = returnResponseFromRequest(request);
+        PetDTOResponse response = DummyPet.returnResponseFromRequest(request);
         doReturn(response).when(petService).create(any(PetDTORequest.class));
         String requestJson = this.mapper.writeValueAsString(request);
         this.mockMvc.perform(post("/api/v1/pet").
@@ -65,7 +64,7 @@ class PetControllerImplTest {
     }
 
   @ParameterizedTest
-  @MethodSource("generateBadDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateBadDTORequests")
   @DisplayName("CONTROLLER - Must return bad request on create pet")
   void mustReturnBadRequest(PetDTORequest invalidRequest) throws Exception {
     String invalidRequestjson = mapper.writeValueAsString(invalidRequest);
@@ -77,10 +76,10 @@ class PetControllerImplTest {
   }
 
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("CONTROLLER - Test for findAll's controller")
     void mustTestFindAllOnController(PetDTORequest request) throws Exception {
-        PetDTOResponse response = returnResponseFromRequest(request);
+        PetDTOResponse response = DummyPet.returnResponseFromRequest(request);
         List<PetDTOResponse> listResponse = List.of(response);
         doReturn(listResponse).when(petService).findAll();
         this.mockMvc.perform(get("/api/v1/pet")).
@@ -90,10 +89,10 @@ class PetControllerImplTest {
     }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("CONTROLLER - Test for findAll pets not adopted")
   void mustTestFindAllNotAdoptedOnController(PetDTORequest request) throws Exception {
-    PetDTOResponse response = returnResponseFromRequest(request);
+    PetDTOResponse response = DummyPet.returnResponseFromRequest(request);
     List<PetDTOResponse> listResponse = List.of(response);
     doReturn(listResponse).when(petService).findAllNotAdopted();
     this.mockMvc.perform(get("/api/v1/pet/notAdopted")).
@@ -103,10 +102,10 @@ class PetControllerImplTest {
   }
 
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("CONTROLLER - Test for getById's controller")
     void mustTestGetByIdOnController(PetDTORequest request) throws Exception {
-        PetDTOResponse response = returnResponseFromRequest(request);
+        PetDTOResponse response = DummyPet.returnResponseFromRequest(request);
         doReturn(response).when(petService).getById(anyString());
         this.mockMvc.perform(get("/api/v1/pet/{id}", response.id())).
                 andDo(print()).andExpect(status().isOk())
@@ -115,19 +114,19 @@ class PetControllerImplTest {
     }
 
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("CONTROLLER - Test search pet by part of name")
     void mustTestSearchByNameOnController(PetDTORequest request) throws Exception {
-        PetDTOResponse response = returnResponseFromRequest(request);
+        PetDTOResponse response = DummyPet.returnResponseFromRequest(request);
         doReturn(List.of(response)).when(petService).searchByName(anyString());
-        this.mockMvc.perform(get("/api/v1/pet").param("name", request.name().substring(0,2))).
+        this.mockMvc.perform(get("/api/v1/pet/search").param("name", request.name().substring(0,2))).
                 andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].name").value(request.name()));
         verify(petService).searchByName(anyString());
     }
 
   @ParameterizedTest
-  @MethodSource("generateId")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateId")
   @DisplayName("CONTROLLER - Test update pet")
   void mustUpdatePet(String id) throws Exception {
 
@@ -153,7 +152,7 @@ class PetControllerImplTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateId")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateId")
   @DisplayName("CONTROLLER - Delete pet from id")
   void mustDeletePetById(String id) throws Exception {
     doNothing().when(petService).delete(anyString());
@@ -166,10 +165,10 @@ class PetControllerImplTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("CONTROLLER - patch adopted pet status by id")
   void mustpatchAdoptedPetStatusById(PetDTORequest request) throws Exception {
-    var response = returnADoptedPetResponseFromRequest(request);
+    var response = DummyPet.returnADoptedPetResponseFromRequest(request);
     doReturn(response).when(petService).patchStatus(anyString());
     this.mockMvc.perform(patch("/api/v1/pet/{id}", response.id().toString()))
       .andDo(print())
@@ -178,55 +177,5 @@ class PetControllerImplTest {
 
     verify(petService).patchStatus(anyString());
   }
-
-  public static Stream<Arguments> generateId() {
-   return Stream.of(
-      Arguments.of(UUID.randomUUID().toString()),
-     Arguments.of(UUID.randomUUID().toString()),
-     Arguments.of(UUID.randomUUID().toString())
-    );
-  }
-
-
-    private static Stream<Arguments> generateDTORequests(){
-        return Stream.of(
-                Arguments.of(
-                        new PetDTORequest("Toto", "MALE", "DOG", LocalDate.of(2022, 10, 30))
-                ),
-                Arguments.of(
-                        new PetDTORequest("Belinha", "FEMALE", "DOG", LocalDate.of(2022, 10, 30))
-                ),
-                Arguments.of(
-                        new PetDTORequest("Gatinho", "MALE", "CAT", LocalDate.of(2022, 10, 30))
-                )
-        );
-    }
-
-  private static Stream<Arguments> generateBadDTORequests(){
-    return Stream.of(
-      Arguments.of(
-        new PetDTORequest("ABCSADGEAD12435&*as9f9#$refmdklASJDSDF", "MALE", "DOG", LocalDate.of(2020, 10, 30))
-      ),
-      Arguments.of(
-        new PetDTORequest("Belinha", "female", "sheep", LocalDate.of(2022, 10, 30))
-      ),
-      Arguments.of(
-        new PetDTORequest("Gatinho", "MALE", "CAT", LocalDate.of(2032, 10, 30))
-      )
-    );
-  }
-
-
-  private static PetDTOResponse returnResponseFromRequest(PetDTORequest petDTORequest){
-        return new PetDTOResponse(UUID.randomUUID(), petDTORequest.name(), Gender.valueOf(petDTORequest.gender()),
-                Specie.valueOf(petDTORequest.specie()), false, petDTORequest.birthDate());
-    }
-
-  private static PetDTOResponse returnADoptedPetResponseFromRequest(PetDTORequest petDTORequest){
-    return new PetDTOResponse(UUID.randomUUID(), petDTORequest.name(), Gender.valueOf(petDTORequest.gender()),
-      Specie.valueOf(petDTORequest.specie()), true, petDTORequest.birthDate());
-  }
-
-
 
 }

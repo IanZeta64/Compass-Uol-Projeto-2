@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,9 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import java.time.LocalDate;
 import java.util.UUID;
-import java.util.stream.Stream;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest( classes = AdoptionPetApiApplication.class,
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class IntegrationTest {
+class IntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -42,7 +42,7 @@ public class IntegrationTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("INTEGRATION - must create a new pet and find pet by returned id")
   void mustCreateNewPetAndFindPetByReturnedId(PetDTORequest request) throws Exception {
 
@@ -65,21 +65,19 @@ public class IntegrationTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("INTEGRATION - must create a new pet and find all pets")
   void mustCreateNewPetAndFindAll(PetDTORequest request) throws Exception {
 
     String requestJson = mapper.writeValueAsString(request);
 
-    MvcResult result = mockMvc.perform(post("/api/v1/pet")
+     mockMvc.perform(post("/api/v1/pet")
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestJson))
       .andDo(print())
       .andExpect(status().isCreated())
-      .andExpect(jsonPath("$.name").value(request.name())).andReturn();
+      .andExpect(jsonPath("$.name").value(request.name()));
 
-
-    String id = new JSONObject(result.getResponse().getContentAsString()).getString("id");
 
     mockMvc.perform(get("/api/v1/pet"))
       .andDo(print())
@@ -88,7 +86,7 @@ public class IntegrationTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("INTEGRATION - must return eror 409 is conflit on create a duplicated pet")
   void mustreturnError409IsconflictOnCreatePetDuplicated(PetDTORequest request) throws Exception {
 
@@ -117,7 +115,7 @@ public class IntegrationTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateId")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateId")
   @DisplayName("INTEGRATION - Test for find pet by id and return not founded status")
   void mustNotFindPetByIdAndReturnNotFoundedStatus(String id) throws Exception {
     this.mockMvc.perform(get("/api/v1/pet/{id}", id)).
@@ -125,18 +123,18 @@ public class IntegrationTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("INTEGRATION - must search pet by part of name")
   void mustSearchPetByPartOfName(PetDTORequest request) throws Exception {
 
     String requestJson = mapper.writeValueAsString(request);
 
-    MvcResult result = mockMvc.perform(post("/api/v1/pet")
+    mockMvc.perform(post("/api/v1/pet")
         .contentType(MediaType.APPLICATION_JSON)
         .content(requestJson))
       .andDo(print())
       .andExpect(status().isCreated())
-      .andExpect(jsonPath("$.name").value(request.name())).andReturn();
+      .andExpect(jsonPath("$.name").value(request.name()));
 
     mockMvc.perform(get("/api/v1/pet/search").param("name", request.name()))
       .andDo(print()).andExpect(status().isOk())
@@ -144,21 +142,8 @@ public class IntegrationTest {
 
   }
 
-  private static Stream<Arguments> generateDTORequests(){
-    return Stream.of(
-      Arguments.of(
-        new PetDTORequest("Toto", "MALE", "DOG", LocalDate.of(2022, 10, 30))
-      ),
-      Arguments.of(
-        new PetDTORequest("Belinha", "FEMALE", "DOG", LocalDate.of(2022, 10, 30))
-      ),
-      Arguments.of(
-        new PetDTORequest("Gatinho", "MALE", "CAT", LocalDate.of(2022, 10, 30))
-      )
-    );
-  }
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("INTEGRATION - must delete a pet and testing 404 error")
   void mustDeletePetAndTest404ErrorOnDelete(PetDTORequest request) throws Exception{
     String requestJson = mapper.writeValueAsString(request);
@@ -190,7 +175,7 @@ public class IntegrationTest {
             .andExpect(status().isNotFound());
   }
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("INTEGRATION - must patch isAdopted a new pet and test findAllNotAdopted")
   void mustPatchIsAdoptedStatusAndTestFindAllNotAdopted(PetDTORequest request) throws Exception {
     String requestJson = mapper.writeValueAsString(request);
@@ -220,16 +205,16 @@ public class IntegrationTest {
             .andExpect(jsonPath("$").isEmpty());
   }
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateId")
   @DisplayName("INTEGRATION - must return 404 error for Patch Status Update")
-  void mustReturn404ErrorOnPatchStatusUpdate(PetDTORequest request) throws Exception {
-    mockMvc.perform(patch("/api/v1/pet/{id}", UUID.randomUUID().toString()))
+  void mustReturn404ErrorOnPatchStatusUpdate(String id) throws Exception {
+    mockMvc.perform(patch("/api/v1/pet/{id}", id))
             .andDo(print())
             .andExpect(status().isNotFound());
   }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("INTEGRATION - must update a pet")
   void mustUpdatePet(PetDTORequest request) throws Exception{
     String requestJson = mapper.writeValueAsString(request);
@@ -265,7 +250,7 @@ public class IntegrationTest {
             .andExpect(jsonPath("$.name").value(name));
   }
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("INTEGRATION - must return error 404 to nonexistent pet update")
   void mustReturn404ErrorForNonExistentPetUpdate(PetDTORequest request) throws Exception{
     String requestJson = mapper.writeValueAsString(request);
@@ -275,14 +260,6 @@ public class IntegrationTest {
             .andDo(print())
             .andExpect((status().isNotFound()));
 
-  }
-
-  public static Stream<Arguments> generateId() {
-    return Stream.of(
-      Arguments.of(UUID.randomUUID().toString()),
-      Arguments.of(UUID.randomUUID().toString()),
-      Arguments.of(UUID.randomUUID().toString())
-    );
   }
 
 
