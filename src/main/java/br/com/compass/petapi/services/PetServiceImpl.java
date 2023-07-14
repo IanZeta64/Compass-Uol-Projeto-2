@@ -79,6 +79,10 @@ public class PetServiceImpl implements PetService {
       }).orElseThrow(() -> new PetNotFoundException(String.format("Pet not found by id %s. Cannot update pet adoption.", id)));
     log.info("SERVICE - returning updated pet to CONTROLLER");
     return new PetDTOResponse(petRepository.save(petUpdate));
+  }
 
+  @Override
+  public List<PetDTOResponse> findAllNotAdopted() {
+    return petRepository.findAllByIsAdoptedFalse().stream().map(PetDTOResponse::new).toList();
   }
 }

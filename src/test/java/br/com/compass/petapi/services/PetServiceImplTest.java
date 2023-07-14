@@ -156,6 +156,19 @@ class PetServiceImplTest {
         verify(petRepository).findAll();
     }
 
+  @ParameterizedTest
+  @MethodSource("generateDTORequests")
+  @DisplayName("Test find all not adopted")
+  void mustTestFindAllNotAdoptedMethod(PetDTORequest request){
+    Pet pet = new Pet(request);
+    doReturn(List.of(pet)).when(petRepository).findAllByIsAdoptedFalse();
+    List<PetDTOResponse> responseList = petService.findAllNotAdopted();
+    assertEqualsMethodList(request, responseList);
+    assertFalse(responseList.get(0).isAdopted());
+    verify(petRepository).findAllByIsAdoptedFalse();
+  }
+
+
     @ParameterizedTest
     @MethodSource("generateDTORequests")
     @DisplayName("Test delete by ID")
@@ -201,7 +214,6 @@ class PetServiceImplTest {
         assertThrows(PetNotFoundException.class, () -> petService.patchStatus(id));
         verify(petRepository).findById(any(UUID.class));
     }
-
 
   private static Stream<Arguments> generateDTORequests(){
     return Stream.of(

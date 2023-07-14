@@ -33,6 +33,11 @@ public class PetControllerImpl implements PetController{
   }
 
   @Override
+  public ResponseEntity<List<PetDTOResponse>> findAllNotAdopted() {
+    return ResponseEntity.ok(petService.findAllNotAdopted());
+  }
+
+  @Override
   public ResponseEntity<PetDTOResponse> getById(String id) {
     log.info("CONTROLLER - getting pet by ID");
     return ResponseEntity.ok(petService.getById(id));

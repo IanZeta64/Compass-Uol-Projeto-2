@@ -21,4 +21,6 @@ public interface PetService {
   public void delete(String id);
 
   PetDTOResponse patchStatus(String id);
+
+  List<PetDTOResponse> findAllNotAdopted();
 }

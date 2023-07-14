@@ -15,10 +15,13 @@ public interface PetController {
   public ResponseEntity<PetDTOResponse> create(@Validated @RequestBody PetDTORequest request, UriComponentsBuilder builder);
   @GetMapping
   public ResponseEntity<List<PetDTOResponse>> findAll();
+
+  @GetMapping("/notAdopted")
+  public ResponseEntity<List<PetDTOResponse>> findAllNotAdopted();
   @GetMapping("/{id}")
   public ResponseEntity<PetDTOResponse> getById(@PathVariable String id);
 
-  @GetMapping(params = "name")
+  @GetMapping(value = "/search", params = "name")
   public ResponseEntity<List<PetDTOResponse>> searchByName(@RequestParam String name);
 
   @PutMapping("/{id}")

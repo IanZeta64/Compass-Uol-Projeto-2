@@ -11,18 +11,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @ControllerAdvice
 public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHandler {
   public static final String METHOD_ARGUMENT_NOT_VALID_ERROR_MESSAGE = "Invalid Field: '%s'. Cause: '%s'.";
 
-  @ExceptionHandler(value = { PetNotFoundException.class })
+  @ExceptionHandler(PetNotFoundException.class)
   protected ResponseEntity<Object> handlePetNotFoundExceptions(PetNotFoundException ex) {
     HttpStatus httpStatus = HttpStatus.NOT_FOUND;
     ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), httpStatus.getReasonPhrase(), List.of(ex.getMessage()));
@@ -55,16 +51,12 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
 
   private List<String> getErrorMessages(BindingResult bindingResult) {
     List<String> errorMessages = new ArrayList<>();
-
     bindingResult.getFieldErrors().forEach(error ->
       errorMessages.add(getMethodArgumentNotValidErrorMessage(error)));
-
     bindingResult.getGlobalErrors().forEach(error ->
       errorMessages.add(getMethodArgumentNotValidErrorMessage(error)));
-
     return errorMessages;
   }
-
   private String getMethodArgumentNotValidErrorMessage(FieldError error) {
     return String.format(METHOD_ARGUMENT_NOT_VALID_ERROR_MESSAGE, error.getField(), error.getDefaultMessage());
   }
@@ -72,6 +64,5 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
   private String getMethodArgumentNotValidErrorMessage(ObjectError error) {
     return String.format(METHOD_ARGUMENT_NOT_VALID_ERROR_MESSAGE, error.getObjectName(), error.getDefaultMessage());
   }
-
 
 }

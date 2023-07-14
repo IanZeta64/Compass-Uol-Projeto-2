@@ -88,6 +88,20 @@ class PetControllerImplTest {
                 andExpect(jsonPath("$.[0].name").value(request.name()));
         verify(petService).findAll();
     }
+
+  @ParameterizedTest
+  @MethodSource("generateDTORequests")
+  @DisplayName("CONTROLLER - Test for findAll pets not adopted")
+  void mustTestFindAllNotAdoptedOnController(PetDTORequest request) throws Exception {
+    PetDTOResponse response = returnResponseFromRequest(request);
+    List<PetDTOResponse> listResponse = List.of(response);
+    doReturn(listResponse).when(petService).findAllNotAdopted();
+    this.mockMvc.perform(get("/api/v1/pet/notAdopted")).
+      andDo(print()).andExpect(status().isOk()).
+      andExpect(jsonPath("$.[0].isAdopted").value(false));
+    verify(petService).findAllNotAdopted();
+  }
+
     @ParameterizedTest
     @MethodSource("generateDTORequests")
     @DisplayName("CONTROLLER - Test for getById's controller")
