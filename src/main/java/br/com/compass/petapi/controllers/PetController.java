@@ -8,7 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
-@RequestMapping("${request.mapping}")
+@RequestMapping("/api/v1/pet")
 public interface PetController {
 
   @PostMapping
