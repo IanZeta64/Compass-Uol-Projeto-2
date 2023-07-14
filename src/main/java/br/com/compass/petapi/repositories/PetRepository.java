@@ -10,4 +10,7 @@ public interface PetRepository extends JpaRepository<Pet, UUID> {
   List<Pet> findByNameIgnoreCaseContaining(String name);
 
   boolean existsByNameAndBirthDate(String name, LocalDate birthDate);
+
+  Optional<Pet> findByNameAndBirthDate(String name, LocalDate birthDate);
+
 }

@@ -3,7 +3,6 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-
 public record PetDTORequest(
 
         @NotBlank(message = "Pet's name cannot be blank.")
