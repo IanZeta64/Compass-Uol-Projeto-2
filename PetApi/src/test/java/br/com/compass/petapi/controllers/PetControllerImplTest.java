@@ -60,7 +60,7 @@ class PetControllerImplTest {
                 contentType(MediaType.APPLICATION_JSON).content(requestJson)).
                 andDo(print()).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value(request.name()));
-        verify(petService).create(any(PetDTORequest.class));
+        verify(petService, times(1)).create(any(PetDTORequest.class));
     }
 
   @ParameterizedTest

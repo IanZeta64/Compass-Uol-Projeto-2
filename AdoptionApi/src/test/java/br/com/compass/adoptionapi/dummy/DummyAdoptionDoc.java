@@ -1,4 +1,5 @@
 package br.com.compass.adoptionapi.dummy;
+import br.com.compass.adoptionapi.clients.dto.PetDTO;
 import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
 import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
 import br.com.compass.adoptionapi.entities.AdoptionDoc;
@@ -8,11 +9,11 @@ import java.util.stream.Stream;
 
 public class DummyAdoptionDoc {
     private static final AdoptionDocDTORequest REQUEST1 =
-      new AdoptionDocDTORequest("c7bafa2b-d204-45e9-bb01-0de8b1da45bc", "Cleber");
+      new AdoptionDocDTORequest("543fb418-25d4-477c-b66c-b3288e167bc7", "Cleber");
   private static final AdoptionDocDTORequest REQUEST2 =
-    new AdoptionDocDTORequest("23db56d1-ca3a-4663-b4c4-9b80cc1fa6ae", "Joao");
+    new AdoptionDocDTORequest("943983c3-f6f2-42a8-b90a-338b5eb76a68", "Joao");
   private static final AdoptionDocDTORequest REQUEST3 =
-    new AdoptionDocDTORequest("e4173701-d2e9-4d48-82f2-81095cd5061e", "Maria");
+    new AdoptionDocDTORequest("d6bbb256-a5d5-47e9-8b54-43a4de60cec9", "Maria");
 
     private static final AdoptionDocDTORequest BADREQUEST1 =
       new AdoptionDocDTORequest("1", "Cleber");
@@ -32,7 +33,7 @@ public class DummyAdoptionDoc {
         Arguments.of(BADREQUEST1),  Arguments.of(BADREQUEST2),  Arguments.of(BADREQUEST3)
       );
     }
-    private static Stream<Arguments> generateEtities(){
+    private static Stream<Arguments> generateEntities(){
       return Stream.of(
         Arguments.of(new AdoptionDoc(REQUEST1)),
         Arguments.of(new AdoptionDoc(REQUEST2)),
@@ -49,6 +50,10 @@ public class DummyAdoptionDoc {
 
     public static AdoptionDocDTOResponse returnResponseFromRequest(AdoptionDocDTORequest request){
       return new AdoptionDocDTOResponse(UUID.randomUUID(), UUID.fromString(request.petId()), request.tutorName());
+    }
+
+    public static PetDTO returnPetDTO(String id){
+      return new PetDTO(UUID.fromString(id), "Toto", false);
     }
 
 }

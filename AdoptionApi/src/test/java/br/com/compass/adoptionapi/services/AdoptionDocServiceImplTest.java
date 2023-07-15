@@ -54,5 +54,6 @@ class AdoptionDocServiceImplTest {
         assertEquals(adoptionDoc.getId(), response.id());
     });
     verify(adoptionRepository, times(1)).save(any(AdoptionDoc.class));
+    verify(petClient, times(1)).getPetById(anyString());
   }
 }
