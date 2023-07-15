@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import java.time.Instant;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,5 +55,29 @@ class AdoptionDocServiceImplTest {
     });
     verify(adoptionRepository, times(1)).save(any(AdoptionDoc.class));
     verify(petClient, times(1)).getPetById(anyString());
+  }
+  @ParameterizedTest
+  @MethodSource("br.com.compass.adoptionapi.dummy.DummyAdoptionDoc#generateDTORequests")
+  @DisplayName("SERVICE - must return all documents")
+  void mustFindAllDocuments(AdoptionDocDTORequest request) {
+    AdoptionDoc adoptionDoc = new AdoptionDoc(UUID.randomUUID(), UUID.fromString(request.petId()),
+            request.tutorName(), Instant.now(), null);
+    doReturn(List.of(adoptionDoc)).when(adoptionRepository).findAll();
+    List<AdoptionDocDTOResponse> adoptionDocs = adoptionService.findAll();
+    assertEqualsMethodList(request, adoptionDocs);
+
+
+    verify(adoptionRepository, times(1)).findAll();
+  }
+
+  private void assertEqualsMethodList(AdoptionDocDTORequest request, List<AdoptionDocDTOResponse> adoptionDocs) {
+      adoptionDocs.forEach(adoptionDoc -> assertEqualsMethod(request, adoptionDoc));
+  }
+
+  private void assertEqualsMethod(AdoptionDocDTORequest request, AdoptionDocDTOResponse adoptionDoc) {
+    assertAll(
+            () -> assertEquals(request.petId(), adoptionDoc.petId().toString()),
+            () -> assertEquals(request.tutorName(), adoptionDoc.tutorName())
+    );
   }
 }
