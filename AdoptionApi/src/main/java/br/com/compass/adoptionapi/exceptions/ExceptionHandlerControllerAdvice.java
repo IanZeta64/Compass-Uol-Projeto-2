@@ -1,6 +1,7 @@
 package br.com.compass.adoptionapi.exceptions;
 
 import feign.FeignException;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

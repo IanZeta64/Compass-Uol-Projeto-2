@@ -22,7 +22,7 @@ public class AdoptionDocControllerImpl implements AdoptionDocController{
 
   @Override
   public ResponseEntity<List<AdoptionDocDTOResponse>> findAll() {
-    return null;
+    return ResponseEntity.status(HttpStatus.OK).body(service.findAll());
   }
 
   @Override
@@ -32,7 +32,7 @@ public class AdoptionDocControllerImpl implements AdoptionDocController{
 
   @Override
   public ResponseEntity<AdoptionDocDTOResponse> update(String id, AdoptionDocDTORequest request) {
-    return null;
+    return ResponseEntity.status(HttpStatus.OK).body(service.update(id, request));
   }
 
   @Override
