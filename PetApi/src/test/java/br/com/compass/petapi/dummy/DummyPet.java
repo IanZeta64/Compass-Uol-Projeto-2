@@ -1,5 +1,4 @@
 package br.com.compass.petapi.dummy;
-
 import br.com.compass.petapi.dto.reponses.PetDTOResponse;
 import br.com.compass.petapi.dto.requests.PetDTORequest;
 import br.com.compass.petapi.entities.Pet;
@@ -13,34 +12,40 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 public class DummyPet {
-  private static final PetDTORequest request1 =  new PetDTORequest("Toto", "MALE", "DOG", LocalDate.of(2022, 10, 30));
-  private static final PetDTORequest request2 = new PetDTORequest("Belinha", "FEMALE", "DOG", LocalDate.of(2022, 10, 30));
-  private static final PetDTORequest request3 = new PetDTORequest("Gatinho", "MALE", "CAT", LocalDate.of(2022, 10, 30));
+  private static final PetDTORequest REQUEST1 =
+    new PetDTORequest("Toto", "MALE", "DOG", LocalDate.of(2022, 10, 30));
+  private static final PetDTORequest REQUEST2 =
+    new PetDTORequest("Belinha", "FEMALE", "DOG", LocalDate.of(2022, 10, 30));
+  private static final PetDTORequest REQUEST3 =
+    new PetDTORequest("Gatinho", "MALE", "CAT", LocalDate.of(2022, 10, 30));
 
-  private static final PetDTORequest badRequest1 = new PetDTORequest("ABCSADGEAD12435&*as9f9#$refmdklASJDSDF", "MALE", "DOG", LocalDate.of(2020, 10, 30));
-  private static final PetDTORequest getBadRequest2 = new PetDTORequest("Belinha", "female", "sheep", LocalDate.of(2022, 10, 30));
-  private static final PetDTORequest getBadRequest3 = new PetDTORequest("Gatinho", "MALE", "CAT", LocalDate.of(2032, 10, 30));
+  private static final PetDTORequest BADREQUEST1 =
+    new PetDTORequest("ABCSADGEAD12435&*as9f9#$refmdklASJDSDF", "MALE", "DOG", LocalDate.of(2020, 10, 30));
+  private static final PetDTORequest BADREQUEST2 =
+    new PetDTORequest("Belinha", "female", "sheep", LocalDate.of(2022, 10, 30));
+  private static final PetDTORequest BADREQUEST3 =
+    new PetDTORequest("Gatinho", "MALE", "CAT", LocalDate.of(2032, 10, 30));
 
   public static Stream<Arguments> generateDTORequests(){
     return Stream.of(
-      Arguments.of(request1),  Arguments.of(request2),  Arguments.of(request3)
+      Arguments.of(REQUEST1),  Arguments.of(REQUEST2),  Arguments.of(REQUEST3)
     );
   }
 
   public static Stream<Arguments> generateBadDTORequests(){
     return Stream.of(
-      Arguments.of(badRequest1),  Arguments.of(badRequest1),  Arguments.of(badRequest1)
+      Arguments.of(BADREQUEST1),  Arguments.of(BADREQUEST2),  Arguments.of(BADREQUEST3)
     );
   }
   private static Stream<Arguments> generatePets(){
     return Stream.of(
-      Arguments.of(new Pet(UUID.randomUUID(), "Toto", Gender.MALE, Specie.DOG, false, LocalDate.of(2020, 10, 30), Instant.now(), null)
+      Arguments.of(new Pet(REQUEST1)
       ),
       Arguments.of(
-        new Pet(UUID.randomUUID(), "Belinha", Gender.FEMALE, Specie.DOG, true, LocalDate.of(2022, 10, 30), Instant.now(), Instant.now())
+        new Pet(REQUEST2)
       ),
       Arguments.of(
-        new Pet(UUID.randomUUID(), "Gatinho", Gender.MALE, Specie.CAT, false, LocalDate.of(2020, 10, 30), Instant.now(), Instant.now())
+        new Pet(REQUEST3)
       )
     );
   }
@@ -52,13 +57,13 @@ public class DummyPet {
     );
   }
 
-  public static PetDTOResponse returnResponseFromRequest(PetDTORequest petDTORequest){
-    return new PetDTOResponse(UUID.randomUUID(), petDTORequest.name(), Gender.valueOf(petDTORequest.gender()),
-      Specie.valueOf(petDTORequest.specie()), false, petDTORequest.birthDate());
+  public static PetDTOResponse returnResponseFromRequest(PetDTORequest request){
+    return new PetDTOResponse(UUID.randomUUID(), request.name(), Gender.valueOf(request.gender()),
+      Specie.valueOf(request.specie()), false, request.birthDate());
   }
 
-  public static PetDTOResponse returnADoptedPetResponseFromRequest(PetDTORequest petDTORequest){
-    return new PetDTOResponse(UUID.randomUUID(), petDTORequest.name(), Gender.valueOf(petDTORequest.gender()),
-      Specie.valueOf(petDTORequest.specie()), true, petDTORequest.birthDate());
+  public static PetDTOResponse returnADoptedPetResponseFromRequest(PetDTORequest request){
+    return new PetDTOResponse(UUID.randomUUID(), request.name(), Gender.valueOf(request.gender()),
+      Specie.valueOf(request.specie()), true, request.birthDate());
   }
 }

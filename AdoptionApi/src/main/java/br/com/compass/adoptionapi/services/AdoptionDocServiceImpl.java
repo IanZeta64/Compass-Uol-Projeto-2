@@ -1,6 +1,6 @@
 package br.com.compass.adoptionapi.services;
 import br.com.compass.adoptionapi.clients.dto.PetDTO;
-import br.com.compass.adoptionapi.clients.repositories.PetRepositoryFeingClient;
+import br.com.compass.adoptionapi.clients.repositories.PetRepositoryFeignClient;
 import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
 import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
 import br.com.compass.adoptionapi.entities.AdoptionDoc;
@@ -15,7 +15,7 @@ import java.util.List;
 public class AdoptionDocServiceImpl implements AdoptionDocService{
 
   private final AdoptionDocRepository repository;
-  private final PetRepositoryFeingClient petClient;
+  private final PetRepositoryFeignClient petClient;
 
   @Override
   public AdoptionDocDTOResponse create(AdoptionDocDTORequest request) {

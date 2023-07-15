@@ -20,7 +20,9 @@ public class Pet {
   private UUID id;
 
   private String name;
+  @Enumerated(EnumType.STRING)
   private Gender gender;
+  @Enumerated(EnumType.STRING)
   private Specie specie;
   private Boolean isAdopted;
   private LocalDate birthDate;

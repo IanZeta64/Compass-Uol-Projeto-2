@@ -105,9 +105,10 @@ class PetControllerImplTest {
     @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("CONTROLLER - Test for getById's controller")
     void mustTestGetByIdOnController(PetDTORequest request) throws Exception {
+
         PetDTOResponse response = DummyPet.returnResponseFromRequest(request);
         doReturn(response).when(petService).getById(anyString());
-        this.mockMvc.perform(get("/api/v1/pet/{id}", response.id())).
+        this.mockMvc.perform(get("/api/v1/pet/{id}", response.id().toString())).
                 andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(request.name()));
         verify(petService).getById(anyString());
@@ -170,7 +171,7 @@ class PetControllerImplTest {
   void mustpatchAdoptedPetStatusById(PetDTORequest request) throws Exception {
     var response = DummyPet.returnADoptedPetResponseFromRequest(request);
     doReturn(response).when(petService).patchStatus(anyString());
-    this.mockMvc.perform(patch("/api/v1/pet/{id}", response.id().toString()))
+    this.mockMvc.perform(patch("/api/v1/pet/alterAdoptedStatus/{id}", response.id().toString()))
       .andDo(print())
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.isAdopted").value(true));

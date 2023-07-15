@@ -14,5 +14,5 @@ public interface PetRepository extends JpaRepository<Pet, UUID> {
 
   Optional<Pet> findByNameAndBirthDate(String name, LocalDate birthDate);
 
-  List<Pet> findAllByIsAdoptedFalse();;
+  List<Pet> findAllByIsAdoptedFalse();
 }

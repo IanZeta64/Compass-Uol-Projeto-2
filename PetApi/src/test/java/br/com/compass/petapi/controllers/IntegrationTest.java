@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-
 @SpringBootTest( classes = AdoptionPetApiApplication.class,
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -194,7 +193,7 @@ class IntegrationTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(id));
 
-    mockMvc.perform(patch("/api/v1/pet/{id}", id))
+    mockMvc.perform(patch("/api/v1/pet/alterAdoptedStatus/{id}", id))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.isAdopted").value(true));
@@ -208,7 +207,7 @@ class IntegrationTest {
   @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateId")
   @DisplayName("INTEGRATION - must return 404 error for Patch Status Update")
   void mustReturn404ErrorOnPatchStatusUpdate(String id) throws Exception {
-    mockMvc.perform(patch("/api/v1/pet/{id}", id))
+    mockMvc.perform(patch("/api/v1/pet/alterAdoptedStatus/{id}", id))
             .andDo(print())
             .andExpect(status().isNotFound());
   }
