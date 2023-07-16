@@ -13,8 +13,6 @@ public interface AdoptionDocService {
   public AdoptionDocDTOResponse findById( String id);
 
 
-  public AdoptionDocDTOResponse update(String id, AdoptionDocDTORequest request);
-
 
   public void delete( String id);
 }

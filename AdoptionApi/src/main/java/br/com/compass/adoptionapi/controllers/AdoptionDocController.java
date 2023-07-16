@@ -20,9 +20,6 @@ public interface AdoptionDocController {
   @GetMapping("/{id}")
   public ResponseEntity<AdoptionDocDTOResponse> findById(@PathVariable String id);
 
-  @PutMapping("/{id}")
-  public ResponseEntity<AdoptionDocDTOResponse> update(@PathVariable String id, @Validated @RequestBody AdoptionDocDTORequest request);
-
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable String id);
 }

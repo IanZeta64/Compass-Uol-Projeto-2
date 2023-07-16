@@ -42,13 +42,6 @@ public class AdoptionDocControllerImpl implements AdoptionDocController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
-
-  @Override
-  public ResponseEntity<AdoptionDocDTOResponse> update(String id, AdoptionDocDTORequest request) {
-    log.info("CONTROLLER - updating adoptionDoc");
-    return ResponseEntity.status(HttpStatus.OK).body(service.update(id, request));
-  }
-
   @Override
   public ResponseEntity<Void> delete(String id) {
     try {

@@ -68,28 +68,6 @@ class AdoptionDocServiceImplTest {
     verify(adoptionRepository, times(1)).findAll();
   }
 
-//  @ParameterizedTest
-//  @MethodSource("br.com.compass.adoptionapi.dummy.DummyAdoptionDoc#generateDTORequests")
-//  @DisplayName("SERVICE - update a document")
-//  void mustUpdateDocument(AdoptionDocDTORequest request) {
-//    PetDTO petDTO = new PetDTO(UUID.randomUUID(), "name", false);
-//    AdoptionDoc doc = new AdoptionDoc(UUID.randomUUID(), petDTO.getId(), request.tutorName(), Instant.now(), null);
-//
-//    AdoptionDocDTORequest toUpdateDoc = new AdoptionDocDTORequest(petDTO.getId().toString(), "name");
-//
-//    AdoptionDoc updatedDoc = new AdoptionDoc(doc.getId(), UUID.fromString(toUpdateDoc.petId()), toUpdateDoc.tutorName(), doc.getRegisteredOn(), Instant.now());
-//    doReturn(Optional.of(doc)).when(adoptionRepository).findById(any(UUID.class));
-//    doReturn(updatedDoc).when(adoptionRepository).save(any(AdoptionDoc.class));
-//
-//    AdoptionDocDTOResponse response = adoptionService.update(doc.getId().toString(), toUpdateDoc);
-//    assertEqualsMethod(request, response);
-//    assertEquals(doc.getId(), response.id());
-//    assertDoesNotThrow(() -> IllegalArgumentException.class, String.format
-//            ("Document not founded by id %s. Cannot update adoption document.", doc.getId()));
-//
-//    verify(adoptionRepository, times(1)).save(any(AdoptionDoc.class));
-//  }
-
   @ParameterizedTest
   @MethodSource("br.com.compass.adoptionapi.dummy.DummyAdoptionDoc#generateDTORequests")
   @DisplayName("SERVICE - find adoption document by id")
