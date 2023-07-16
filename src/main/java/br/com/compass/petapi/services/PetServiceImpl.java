@@ -38,6 +38,11 @@ public class PetServiceImpl implements PetService {
     return petRepository.findAll().stream().map(PetDTOResponse::new).toList();
   }
   @Override
+  public List<PetDTOResponse> findAllNotAdopted() {
+    log.info("SERVICE - finding all not adopted pets");
+    return petRepository.findAllByIsAdoptedFalse().stream().map(PetDTOResponse::new).toList();
+  }
+  @Override
   public PetDTOResponse getById(String id) {
     log.info("SERVICE - getting pet by ID");
     Pet petReturn = petRepository.findById(UUID.fromString(id))
@@ -79,6 +84,7 @@ public class PetServiceImpl implements PetService {
       }).orElseThrow(() -> new PetNotFoundException(String.format("Pet not found by id %s. Cannot update pet adoption.", id)));
     log.info("SERVICE - returning updated pet to CONTROLLER");
     return new PetDTOResponse(petRepository.save(petUpdate));
-
   }
+
+
 }

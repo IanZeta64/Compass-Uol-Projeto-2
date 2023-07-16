@@ -20,7 +20,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -36,7 +35,7 @@ class PetServiceImplTest {
 
 
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("SERVICE - Create a new pet")
     void mustCreatePetMethod(PetDTORequest request) {
         Pet pet = returnPetWithIdFromRequest(request);
@@ -55,7 +54,7 @@ class PetServiceImplTest {
     }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("SERVICE - Throws exception on create a new pet")
   void mustThrowExceptionOnCreatePetMethod(PetDTORequest request) {
 
@@ -65,7 +64,7 @@ class PetServiceImplTest {
   }
 
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("SERVICE - Search by name")
     void mustSearchByNamePetMethod(PetDTORequest request){
         Pet pet = new Pet(request);
@@ -77,7 +76,7 @@ class PetServiceImplTest {
     }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("SERVICE - Find pet by id")
   void mustFindPetById(PetDTORequest request){
     Pet pet = returnPetWithIdFromRequest(request);
@@ -92,7 +91,7 @@ class PetServiceImplTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("SERVICE - Throws exceptions find pet by id")
   void mustThrowExceptionsOnFindPetById(PetDTORequest request){
     String id = returnPetWithIdFromRequest(request).getId().toString();
@@ -103,7 +102,7 @@ class PetServiceImplTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("SERVICE - update pet")
   void mustUpdatePet(PetDTORequest request) {
     Pet pet = returnPetWithIdFromRequest(request);
@@ -134,7 +133,7 @@ class PetServiceImplTest {
   }
 
   @ParameterizedTest
-  @MethodSource("generateDTORequests")
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
   @DisplayName("SERVICE - Throw exception update pet")
   void mustThrowExceptionUpdatePet(PetDTORequest request) {
     String id = returnPetWithIdFromRequest(request).getId().toString();
@@ -146,7 +145,7 @@ class PetServiceImplTest {
     verify(petRepository).findById(any(UUID.class));
   }
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("Test find all")
     void mustTestFindAllMethod(PetDTORequest request){
         Pet pet = new Pet(request);
@@ -156,8 +155,21 @@ class PetServiceImplTest {
         verify(petRepository).findAll();
     }
 
+  @ParameterizedTest
+  @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
+  @DisplayName("Test find all not adopted")
+  void mustTestFindAllNotAdoptedMethod(PetDTORequest request){
+    Pet pet = new Pet(request);
+    doReturn(List.of(pet)).when(petRepository).findAllByIsAdoptedFalse();
+    List<PetDTOResponse> responseList = petService.findAllNotAdopted();
+    assertEqualsMethodList(request, responseList);
+    assertFalse(responseList.get(0).isAdopted());
+    verify(petRepository).findAllByIsAdoptedFalse();
+  }
+
+
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("Test delete by ID")
     void mustTestDeleteMethod(PetDTORequest request){
         Pet pet = returnPetWithIdFromRequest(request);
@@ -169,7 +181,7 @@ class PetServiceImplTest {
     }
 
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("Test throw exception on Delete Method")
     void mustThrowExceptionOnDeleteMethod(PetDTORequest request){
         Pet pet = returnPetWithIdFromRequest(request);
@@ -178,7 +190,7 @@ class PetServiceImplTest {
         verify(petRepository).findById(any(UUID.class));
     }
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("Test patch status")
     void mustTestPatchStatus(PetDTORequest request){
         Pet pet = returnPetWithIdFromRequest(request);
@@ -193,7 +205,7 @@ class PetServiceImplTest {
         verify(petRepository).save(any(Pet.class));
     }
     @ParameterizedTest
-    @MethodSource("generateDTORequests")
+    @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("Test throw Exception patch status")
     void mustThrowExceptionOnPatchStatus(PetDTORequest request){
         String id = returnPetWithIdFromRequest(request).getId().toString();
@@ -202,20 +214,6 @@ class PetServiceImplTest {
         verify(petRepository).findById(any(UUID.class));
     }
 
-
-  private static Stream<Arguments> generateDTORequests(){
-    return Stream.of(
-      Arguments.of(
-        new PetDTORequest("Toto", "MALE", "DOG", LocalDate.of(2022, 10, 30))
-      ),
-      Arguments.of(
-        new PetDTORequest("Belinha", "FEMALE", "DOG", LocalDate.of(2022, 10, 30))
-      ),
-      Arguments.of(
-        new PetDTORequest("Gatinho", "MALE", "CAT", LocalDate.of(2022, 10, 30))
-      )
-    );
-  }
 
   private static void assertEqualsMethod(PetDTORequest request, PetDTOResponse response){
     assertAll(

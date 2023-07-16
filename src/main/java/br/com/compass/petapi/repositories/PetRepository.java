@@ -1,4 +1,5 @@
 package br.com.compass.petapi.repositories;
+import br.com.compass.petapi.dto.reponses.PetDTOResponse;
 import br.com.compass.petapi.entities.Pet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,5 @@ public interface PetRepository extends JpaRepository<Pet, UUID> {
 
   Optional<Pet> findByNameAndBirthDate(String name, LocalDate birthDate);
 
+  List<Pet> findAllByIsAdoptedFalse();;
 }
