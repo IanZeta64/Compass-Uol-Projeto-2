@@ -27,7 +27,7 @@ public class AdoptionDocServiceImpl implements AdoptionDocService{
     log.info("SERVICE - searching for the especific pet");
     PetDTO petDTO = petClient.getPetById(request.petId());
     if (Boolean.TRUE.equals(petDTO.getIsAdopted())){
-      throw new PetAlreadyAdoptedException("Pet already adopted");
+      throw new PetAlreadyAdoptedException(String.format("Pet with id %s already adopted", petDTO.getId()));
     }
     log.info("SERVICE - saving the new document");
     AdoptionDoc adoptionDoc = repository.save(new AdoptionDoc(request));
@@ -53,7 +53,7 @@ public class AdoptionDocServiceImpl implements AdoptionDocService{
     repository.findById(UUID.fromString(id)).ifPresentOrElse(
             doc -> {
               log.info("SERVICE - deleting pet");
-              repository.deleteById((UUID.fromString(id)));
+              repository.delete(doc);
               log.info("SERVICE - updating pet isAdopted status to false");
               petClient.patchStatusPet(doc.getPetId().toString());
             },

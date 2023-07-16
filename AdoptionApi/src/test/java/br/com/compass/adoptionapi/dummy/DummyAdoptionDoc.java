@@ -4,6 +4,8 @@ import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
 import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
 import br.com.compass.adoptionapi.entities.AdoptionDoc;
 import org.junit.jupiter.params.provider.Arguments;
+
+import java.time.Instant;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -27,6 +29,13 @@ public class DummyAdoptionDoc {
         Arguments.of(REQUEST1),  Arguments.of(REQUEST2),  Arguments.of(REQUEST3)
       );
     }
+
+  public static AdoptionDoc returnEntitiesFromRequest(AdoptionDocDTORequest request){
+    return new AdoptionDoc(UUID.randomUUID(), UUID.fromString(request.petId()),
+      request.tutorName(), Instant.now(), null);
+  }
+
+
 
     public static Stream<Arguments> generateBadDTORequests(){
       return Stream.of(
