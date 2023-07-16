@@ -10,7 +10,7 @@ public interface AdoptionDocService {
   public List<AdoptionDocDTOResponse> findAll();
 
 
-  public AdoptionDocDTOResponse findById( String id);
+  public AdoptionDocDTOResponse findById(String id);
 
 
   public AdoptionDocDTOResponse update(String id, AdoptionDocDTORequest request);
