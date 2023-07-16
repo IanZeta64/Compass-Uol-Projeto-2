@@ -1,5 +1,4 @@
 package br.com.compass.adoptionapi.services;
-
 import br.com.compass.adoptionapi.clients.dto.PetDTO;
 import br.com.compass.adoptionapi.clients.repositories.PetRepositoryFeignClient;
 import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
@@ -18,73 +17,73 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AdoptionDocServiceImpl implements AdoptionDocService {
+public class AdoptionDocServiceImpl implements AdoptionDocService{
 
-    private final AdoptionDocRepository repository;
-    private final PetRepositoryFeignClient petClient;
+  private final AdoptionDocRepository repository;
+  private final PetRepositoryFeignClient petClient;
 
-    @Override
-    public AdoptionDocDTOResponse create(AdoptionDocDTORequest request) {
-        PetDTO petDTO = petClient.getPetById(request.petId());
-        if (Boolean.TRUE.equals(petDTO.getIsAdopted())) {
-            throw new PetAlreadyAdoptedException("Pet already adopted");
-        }
-        AdoptionDoc adoptionDoc = repository.save(new AdoptionDoc(request));
-        petClient.patchStatusPet(request.petId());
-        return new AdoptionDocDTOResponse(adoptionDoc);
+  @Override
+  public AdoptionDocDTOResponse create(AdoptionDocDTORequest request) {
+    PetDTO petDTO = petClient.getPetById(request.petId());
+    if (Boolean.TRUE.equals(petDTO.getIsAdopted())){
+      throw new PetAlreadyAdoptedException("Pet already adopted");
+    }
+    AdoptionDoc adoptionDoc = repository.save(new AdoptionDoc(request));
+    petClient.patchStatusPet(request.petId());
+    return new AdoptionDocDTOResponse(adoptionDoc);
+  }
+
+  @Override
+  public List<AdoptionDocDTOResponse> findAll() {
+  return repository.findAll().stream().map(AdoptionDocDTOResponse::new).toList();
+  }
+
+  @Override
+  public AdoptionDocDTOResponse findById(String id) {
+    UUID uuid;
+    uuid = UUID.fromString(id);
+    AdoptionDoc adoptionDocReturn = repository.findById(uuid)
+            .orElseThrow(() -> new AdoptionDocNotFoundException(String.format("Adoption doc not founded by id %s." + id)));
+    return new AdoptionDocDTOResponse(adoptionDocReturn);
+  }
+
+  @Override
+  public AdoptionDocDTOResponse update(String id, AdoptionDocDTORequest request) {
+    PetDTO petDTO = petClient.getPetById(request.petId());
+    Optional<AdoptionDoc> adoptionDoc = repository.findById(UUID.fromString(id));
+    AdoptionDoc updatedAdoptionDoc = repository.findById(UUID.fromString(id)).map(adopDoc ->
+            new AdoptionDoc(adopDoc.getId(), UUID.fromString(request.petId()),request.tutorName(), adopDoc.getRegisteredOn(),
+                    Instant.now())).orElseThrow(() -> new IllegalArgumentException(String.format("Document not founded by id %s. Cannot update adoption document.", id)));
+
+    if (Boolean.TRUE.equals(petDTO.getIsAdopted()) && !(id.equals(updatedAdoptionDoc.getId().toString()))){
+      throw new PetAlreadyAdoptedException("Pet already adopted by someone else");
+    }
+    if(!(request.petId().equals(adoptionDoc.get().getId().toString())) && id.equals(adoptionDoc.get().getId().toString())){
+      petClient.patchStatusPet(petDTO.getId().toString());
     }
 
-    @Override
-    public List<AdoptionDocDTOResponse> findAll() {
-        return repository.findAll().stream().map(AdoptionDocDTOResponse::new).toList();
+    petClient.patchStatusPet(request.petId());
+
+    return new AdoptionDocDTOResponse(repository.save(updatedAdoptionDoc));
+  }
+
+  @Override
+  public void delete(String id) {
+    UUID uuid;
+    try {
+      uuid = UUID.fromString(id);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Invalid ID format: " + id);
     }
 
-    @Override
-    public AdoptionDocDTOResponse findById(String id) {
-        UUID uuid;
-        uuid = UUID.fromString(id);
-        AdoptionDoc adoptionDocReturn = repository.findById(uuid)
-                .orElseThrow(() -> new AdoptionDocNotFoundException(String.format("Adoption doc not founded by id %s." + id)));
-        return new AdoptionDocDTOResponse(adoptionDocReturn);
+    Optional<AdoptionDoc> adoptionDocOptional = repository.findById(uuid);
+    if (adoptionDocOptional.isEmpty()) {
+      throw new AdoptionDocNotFoundException("Adoption doc not found by ID " + id);
     }
 
-    @Override
-    public AdoptionDocDTOResponse update(String id, AdoptionDocDTORequest request) {
-        PetDTO petDTO = petClient.getPetById(request.petId());
-        Optional<AdoptionDoc> adoptionDoc = repository.findById(UUID.fromString(id));
-        AdoptionDoc updatedAdoptionDoc = repository.findById(UUID.fromString(id)).map(adopDoc ->
-                new AdoptionDoc(adopDoc.getId(), UUID.fromString(request.petId()), request.tutorName(), adopDoc.getRegisteredOn(),
-                        Instant.now())).orElseThrow(() -> new IllegalArgumentException(String.format("Document not founded by id %s. Cannot update adoption document.", id)));
+    AdoptionDoc adoptionDoc = adoptionDocOptional.get();
+    petClient.patchStatusPet(adoptionDoc.getPetId().toString());
 
-        if (Boolean.TRUE.equals(petDTO.getIsAdopted()) && !(id.equals(updatedAdoptionDoc.getId().toString()))) {
-            throw new PetAlreadyAdoptedException("Pet already adopted by someone else");
-        }
-        if (!(request.petId().equals(adoptionDoc.get().getId().toString())) && id.equals(adoptionDoc.get().getId().toString())) {
-            petClient.patchStatusPet(petDTO.getId().toString());
-        }
-
-        petClient.patchStatusPet(request.petId());
-
-        return new AdoptionDocDTOResponse(repository.save(updatedAdoptionDoc));
-    }
-
-    @Override
-    public void delete(String id) {
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(id);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid ID format: " + id);
-        }
-
-        Optional<AdoptionDoc> adoptionDocOptional = repository.findById(uuid);
-        if (adoptionDocOptional.isEmpty()) {
-            throw new AdoptionDocNotFoundException("Adoption doc not found by ID " + id);
-        }
-
-        AdoptionDoc adoptionDoc = adoptionDocOptional.get();
-        petClient.patchStatusPet(adoptionDoc.getPetId().toString());
-
-        repository.deleteById(uuid);
-    }
+    repository.deleteById(uuid);
+  }
 }
