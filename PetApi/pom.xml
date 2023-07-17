@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.compass</groupId>
-	<artifactId>AdoptionPetAPI</artifactId>
+	<artifactId>PetApi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>AdoptionPetAPI</name>
 	<description>ONG Api for adoption pets</description>
