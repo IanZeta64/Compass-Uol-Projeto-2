@@ -603,3 +603,15 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2023-07-17 16:53:42 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'MALE' (PET_TABLE: ""GENDER"" TINYINT)"; SQL statement:
+insert into pet_table (birth_date,gender,is_adopted,modified_on,name,register_on,specie,id) values (?,?,?,?,?,?,?,?) [22018-214]
+2023-07-17 16:54:17 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'MALE' (PET_TABLE: ""GENDER"" TINYINT)"; SQL statement:
+insert into pet_table (birth_date,gender,is_adopted,modified_on,name,register_on,specie,id) values (?,?,?,?,?,?,?,?) [22018-214]
+2023-07-17 16:55:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'MALE' (PET_TABLE: ""GENDER"" TINYINT)"; SQL statement:
+insert into pet_table (birth_date,gender,is_adopted,modified_on,name,register_on,specie,id) values (?,?,?,?,?,?,?,?) [22018-214]
+2023-07-17 16:56:06 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'MALE' (PET_TABLE: ""GENDER"" TINYINT)"; SQL statement:
+insert into pet_table (birth_date,gender,is_adopted,modified_on,name,register_on,specie,id) values (?,?,?,?,?,?,?,?) [22018-214]
