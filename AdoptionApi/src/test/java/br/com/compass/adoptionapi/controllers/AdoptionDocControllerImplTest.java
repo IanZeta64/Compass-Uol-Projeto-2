@@ -1,43 +1,41 @@
 package br.com.compass.adoptionapi.controllers;
-import br.com.compass.adoptionapi.clients.dto.PetDTO;
-import br.com.compass.adoptionapi.clients.repositories.PetRepositoryFeignClient;
-import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
-import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
-import br.com.compass.adoptionapi.dummy.DummyAdoptionDoc;
 
+import br.com.compass.adoptionapi.config.WireMockConfig;
 import br.com.compass.adoptionapi.services.AdoptionDocServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
+@ActiveProfiles("test")
+@EnableConfigurationProperties
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@ContextConfiguration(classes = { WireMockConfig.class })
 @AutoConfigureMockMvc
-@ExtendWith(MockitoExtension.class)
 class AdoptionDocControllerImplTest {
 
   @InjectMocks
   private AdoptionDocControllerImpl controller;
 //  @Mock
-//  private PetRepositoryFeignClient petClient;
+//  private PetFeignClient petClient;
   @Mock
   private AdoptionDocServiceImpl service;
   private MockMvc mockMvc;

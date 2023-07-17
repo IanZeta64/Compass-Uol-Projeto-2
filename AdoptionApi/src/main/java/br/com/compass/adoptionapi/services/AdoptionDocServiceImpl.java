@@ -1,6 +1,6 @@
 package br.com.compass.adoptionapi.services;
 import br.com.compass.adoptionapi.clients.dto.PetDTO;
-import br.com.compass.adoptionapi.clients.repositories.PetRepositoryFeignClient;
+import br.com.compass.adoptionapi.clients.repositories.PetFeignClient;
 import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
 import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
 import br.com.compass.adoptionapi.entities.AdoptionDoc;
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class AdoptionDocServiceImpl implements AdoptionDocService{
 
   private final AdoptionDocRepository repository;
-  private final PetRepositoryFeignClient petClient;
+  private final PetFeignClient petClient;
 
   @Override
   public AdoptionDocDTOResponse create(AdoptionDocDTORequest request) {
@@ -32,6 +32,7 @@ public class AdoptionDocServiceImpl implements AdoptionDocService{
     AdoptionDoc adoptionDoc = repository.save(new AdoptionDoc(request));
     log.info("SERVICE - updating the isAdopted of the pet to true");
     petClient.patchStatusPet(request.petId());
+    petDTO.setIsAdopted(true);
     return new AdoptionDocDTOResponse(adoptionDoc, petDTO);
   }
 

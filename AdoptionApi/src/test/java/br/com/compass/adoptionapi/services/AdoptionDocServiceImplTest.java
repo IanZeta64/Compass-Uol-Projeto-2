@@ -1,6 +1,6 @@
 package br.com.compass.adoptionapi.services;
 import br.com.compass.adoptionapi.clients.dto.PetDTO;
-import br.com.compass.adoptionapi.clients.repositories.PetRepositoryFeignClient;
+import br.com.compass.adoptionapi.clients.repositories.PetFeignClient;
 import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
 import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
 import br.com.compass.adoptionapi.dummy.DummyAdoptionDoc;
@@ -31,7 +31,7 @@ class AdoptionDocServiceImplTest {
   private AdoptionDocRepository adoptionRepository;
 
   @Mock
-  private PetRepositoryFeignClient petClient;
+  private PetFeignClient petClient;
 
   @InjectMocks
   private AdoptionDocServiceImpl adoptionService;
@@ -52,7 +52,7 @@ class AdoptionDocServiceImplTest {
         assertEqualsMethod(request, response);
         assertEquals(adoptionDoc.getId(), response.id());
         assertEquals(pet, response.pet());
-        assertFalse(pet.getIsAdopted());
+        assertTrue(response.pet().getIsAdopted());
         assertDoesNotThrow(() -> new PetAlreadyAdoptedException("Pet already adopted"), "Pet already adopted");
     });
     verify(adoptionRepository, times(1)).save(any(AdoptionDoc.class));
