@@ -12,25 +12,25 @@ import java.util.List;
 public interface PetController {
 
   @PostMapping
-  public ResponseEntity<PetDTOResponse> create(@Validated @RequestBody PetDTORequest request, UriComponentsBuilder builder);
+  ResponseEntity<PetDTOResponse> create(@Validated @RequestBody PetDTORequest request, UriComponentsBuilder builder);
   @GetMapping
-  public ResponseEntity<List<PetDTOResponse>> findAll();
+  ResponseEntity<List<PetDTOResponse>> findAll();
 
   @GetMapping("/notAdopted")
-  public ResponseEntity<List<PetDTOResponse>> findAllNotAdopted();
+  ResponseEntity<List<PetDTOResponse>> findAllNotAdopted();
   @GetMapping("/{id}")
-  public ResponseEntity<PetDTOResponse> getById(@PathVariable String id);
+  ResponseEntity<PetDTOResponse> getById(@PathVariable String id);
 
   @GetMapping(value = "/search", params = "name")
-  public ResponseEntity<List<PetDTOResponse>> searchByName(@RequestParam String name);
+  ResponseEntity<List<PetDTOResponse>> searchByName(@RequestParam String name);
 
   @PutMapping("/{id}")
-  public ResponseEntity<PetDTOResponse> update(@PathVariable String id, @Validated @RequestBody PetDTORequest request, UriComponentsBuilder builder);
+  ResponseEntity<PetDTOResponse> update(@PathVariable String id, @Validated @RequestBody PetDTORequest request, UriComponentsBuilder builder);
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable String id);
+  ResponseEntity<Void> delete(@PathVariable String id);
 
   @PatchMapping("/alterAdoptedStatus/{id}")
-  public ResponseEntity<PetDTOResponse> patchStatus(@PathVariable String id);
+  ResponseEntity<PetDTOResponse> patchStatus(@PathVariable String id);
 
 }

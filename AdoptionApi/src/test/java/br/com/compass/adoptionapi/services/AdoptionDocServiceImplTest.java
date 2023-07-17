@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import java.time.Instant;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,8 +40,8 @@ class AdoptionDocServiceImplTest {
   @MethodSource("br.com.compass.adoptionapi.dummy.DummyAdoptionDoc#generateDTORequests")
   @DisplayName("SERVICE - must create a new adoption document")
   void mustCreateaPetService(AdoptionDocDTORequest request) {
-    UUID petId = UUID.fromString(request.petId());
-    doReturn(new PetDTO(petId, "Toto", false)).when(petClient).getPetById(anyString());
+    PetDTO pet = DummyAdoptionDoc.returnPetDTOFromRequestPetId(request.petId());
+    doReturn(pet).when(petClient).getPetById(anyString());
 
     AdoptionDoc adoptionDoc = DummyAdoptionDoc.returnEntitiesFromRequest(request);
 
@@ -52,6 +51,8 @@ class AdoptionDocServiceImplTest {
     assertAll( () -> {
         assertEqualsMethod(request, response);
         assertEquals(adoptionDoc.getId(), response.id());
+        assertEquals(pet, response.pet());
+        assertFalse(pet.getIsAdopted());
         assertDoesNotThrow(() -> new PetAlreadyAdoptedException("Pet already adopted"), "Pet already adopted");
     });
     verify(adoptionRepository, times(1)).save(any(AdoptionDoc.class));
@@ -62,27 +63,26 @@ class AdoptionDocServiceImplTest {
   @MethodSource("br.com.compass.adoptionapi.dummy.DummyAdoptionDoc#generateDTORequests")
   @DisplayName("SERVICE - Throws exception on create a new adoption document")
   void mustThrowExceptionOnCreateAdoptionDocumentMethod(AdoptionDocDTORequest request) {
-    UUID petId = UUID.fromString(request.petId());
-    doReturn(new PetDTO(petId, "Toto", false)).when(petClient).getPetById(anyString());
+    PetDTO pet = DummyAdoptionDoc.returnAdoptedPetDTOFromRequestPetId(request.petId());
+    doReturn(pet).when(petClient).getPetById(anyString());
 
-    String errorMessage = String.format("Pet with id %s already adopted", petId);
-
-
-    doThrow(PetAlreadyAdoptedException.class).when(adoptionRepository).save(any(AdoptionDoc.class));
+    assertTrue(pet.getIsAdopted());
     assertThrows(PetAlreadyAdoptedException.class, () -> adoptionService.create(request));
-    verify(adoptionRepository, times(1)).save(any(AdoptionDoc.class));
+    verify(petClient, times(1)).getPetById(anyString());
   }
 
   @ParameterizedTest
   @MethodSource("br.com.compass.adoptionapi.dummy.DummyAdoptionDoc#generateDTORequests")
   @DisplayName("SERVICE - must return all documents")
   void mustFindAllDocuments(AdoptionDocDTORequest request) {
-    AdoptionDoc adoptionDoc = new AdoptionDoc(UUID.randomUUID(), UUID.fromString(request.petId()),
-            request.tutorName(), Instant.now(), null);
+    AdoptionDoc adoptionDoc = DummyAdoptionDoc.returnEntitiesFromRequest(request);
+    PetDTO pet = DummyAdoptionDoc.returnPetDTOFromRequestPetId(request.petId());
+    doReturn(pet).when(petClient).getPetById(anyString());
     doReturn(List.of(adoptionDoc)).when(adoptionRepository).findAll();
     List<AdoptionDocDTOResponse> adoptionDocs = adoptionService.findAll();
     assertEqualsMethodList(request, adoptionDocs);
     verify(adoptionRepository, times(1)).findAll();
+    verify(petClient, times(1)).getPetById(anyString());
   }
 
   @ParameterizedTest
@@ -90,8 +90,11 @@ class AdoptionDocServiceImplTest {
   @DisplayName("SERVICE - find adoption document by id")
   void mustFindAdoptionDocById(AdoptionDocDTORequest request) {
     AdoptionDoc adoptionDoc = DummyAdoptionDoc.returnEntitiesFromRequest(request);
+    PetDTO pet = DummyAdoptionDoc.returnPetDTOFromRequestPetId(request.petId());
+
     String errorMessage = String.format("Adoption document not founded by id %s.", adoptionDoc.getId());
 
+    doReturn(pet).when(petClient).getPetById(anyString());
     doReturn(Optional.of(adoptionDoc)).when(adoptionRepository).findById(any(UUID.class));
 
     AdoptionDocDTOResponse response = adoptionService.findById(adoptionDoc.getId().toString());
@@ -99,10 +102,12 @@ class AdoptionDocServiceImplTest {
     assertAll( () -> {
       assertEqualsMethod(request, response);
       assertEquals(adoptionDoc.getId(), response.id());
+      assertEquals(pet, response.pet());
       assertDoesNotThrow(() -> new AdoptionDocNotFoundException(errorMessage), errorMessage);
     });
 
     verify(adoptionRepository, times(1)).findById(any(UUID.class));
+    verify(petClient, times(1)).getPetById(anyString());
   }
 
   @ParameterizedTest
@@ -126,9 +131,13 @@ class AdoptionDocServiceImplTest {
   @MethodSource("br.com.compass.adoptionapi.dummy.DummyAdoptionDoc#generateId")
   @DisplayName("SERVICE - throw adoption document by id when delete")
   void mustReturnAdoptionDocNotFoundExceptionWhenDelete(String id) {
-    doThrow(AdoptionDocNotFoundException.class).when(adoptionRepository).delete(any(AdoptionDoc.class));
+    Optional<AdoptionDoc> optional = Optional.empty();
+    assertFalse(optional.isPresent());
+    doReturn(optional).when(adoptionRepository).findById(any(UUID.class));
+
     assertThrows(AdoptionDocNotFoundException.class,() -> adoptionService.delete(id));
-    verify(adoptionRepository, times(1)).delete(any(AdoptionDoc.class));
+    verify(adoptionRepository, times(1)).findById(any(UUID.class));
+
   }
 
 
@@ -139,7 +148,7 @@ class AdoptionDocServiceImplTest {
 
   private void assertEqualsMethod(AdoptionDocDTORequest request, AdoptionDocDTOResponse adoptionDoc) {
     assertAll(
-            () -> assertEquals(request.petId(), adoptionDoc.petId().toString()),
+            () -> assertEquals(request.petId(), adoptionDoc.pet().getId().toString()),
             () -> assertEquals(request.tutorName(), adoptionDoc.tutorName())
     );
   }

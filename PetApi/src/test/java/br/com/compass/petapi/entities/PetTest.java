@@ -1,17 +1,11 @@
 package br.com.compass.petapi.entities;
-
 import br.com.compass.petapi.dto.requests.PetDTORequest;
 import br.com.compass.petapi.enums.Gender;
 import br.com.compass.petapi.enums.Specie;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,11 +14,9 @@ class PetTest {
   @ParameterizedTest
   @MethodSource("br.com.compass.petapi.dummy.DummyPet#generatePets")
   @DisplayName("PET @ParamTest - test setAdopted method")
-  @SneakyThrows
   void mustTestChangesOnIsAdoptedAndModifiedOnParameterized(Pet pet) {
     boolean isAdopted = pet.getIsAdopted();
     Instant modifiedOn = pet.getModifiedOn();
-    Thread.sleep(500);
     pet.setAdopted();
     assertNotEquals(isAdopted, pet.getIsAdopted());
     assertNotEquals(modifiedOn, pet.getModifiedOn());

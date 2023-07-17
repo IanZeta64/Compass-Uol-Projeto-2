@@ -1,8 +1,5 @@
-package br.com.compass.adoptionapi.config;
-
+package br.com.compass.adoptionapi.clients.config;
 import feign.Client;
-import feign.Contract;
-
 import feign.okhttp.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

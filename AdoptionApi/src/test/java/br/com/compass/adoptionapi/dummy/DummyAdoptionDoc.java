@@ -1,11 +1,11 @@
 package br.com.compass.adoptionapi.dummy;
 import br.com.compass.adoptionapi.clients.dto.PetDTO;
 import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
-import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
 import br.com.compass.adoptionapi.entities.AdoptionDoc;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -24,6 +24,7 @@ public class DummyAdoptionDoc {
     private static final AdoptionDocDTORequest BADREQUEST3 =
       new AdoptionDocDTORequest(null, null);
 
+
     public static Stream<Arguments> generateDTORequests(){
       return Stream.of(
         Arguments.of(REQUEST1),  Arguments.of(REQUEST2),  Arguments.of(REQUEST3)
@@ -33,6 +34,16 @@ public class DummyAdoptionDoc {
   public static AdoptionDoc returnEntitiesFromRequest(AdoptionDocDTORequest request){
     return new AdoptionDoc(UUID.randomUUID(), UUID.fromString(request.petId()),
       request.tutorName(), Instant.now(), null);
+  }
+
+  public static PetDTO returnPetDTOFromRequestPetId(String id){
+    return new PetDTO(UUID.fromString(id), "Toto",
+      false, LocalDate.of(2020,10,10));
+  }
+
+  public static PetDTO returnAdoptedPetDTOFromRequestPetId(String id){
+    return new PetDTO(UUID.fromString(id), "Jilo",
+      true, LocalDate.of(2020,10,10));
   }
 
 
@@ -57,12 +68,12 @@ public class DummyAdoptionDoc {
       );
     }
 
-    public static AdoptionDocDTOResponse returnResponseFromRequest(AdoptionDocDTORequest request){
-      return new AdoptionDocDTOResponse(UUID.randomUUID(), UUID.fromString(request.petId()), request.tutorName());
-    }
-
-    public static PetDTO returnPetDTO(String id){
-      return new PetDTO(UUID.fromString(id), "Toto", false);
-    }
+//    public static AdoptionDocDTOResponse returnResponseFromRequest(AdoptionDocDTORequest request){
+//      return new AdoptionDocDTOResponse(UUID.randomUUID(), UUID.fromString(request.petId()), request.tutorName());
+//    }
+//
+//    public static PetDTO returnPetDTO(String id){
+//      return new PetDTO(UUID.fromString(id), "Toto", false);
+//    }
 
 }

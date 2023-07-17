@@ -1,7 +1,6 @@
 package br.com.compass.adoptionapi.exceptions;
 
 import feign.FeignException;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +31,7 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    List<String> messages = Arrays.asList("Internal Server Error");
+    List<String> messages = List.of("Internal Server Error");
     ErrorResponse errorResponse = new ErrorResponse(ex.status(), "Internal Server Error", messages);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
   }

@@ -72,6 +72,7 @@ class PetControllerImplTest {
     this.mockMvc.perform(post("/api/v1/pet")
         .contentType(MediaType.APPLICATION_JSON).content(invalidRequestjson))
       .andExpect(status().isBadRequest());
+    verify(petService, times(0)).create(any(PetDTORequest.class));
 
   }
 
@@ -85,7 +86,7 @@ class PetControllerImplTest {
         this.mockMvc.perform(get("/api/v1/pet")).
                 andDo(print()).andExpect(status().isOk()).
                 andExpect(jsonPath("$.[0].name").value(request.name()));
-        verify(petService).findAll();
+        verify(petService, times(1)).findAll();
     }
 
   @ParameterizedTest
@@ -98,7 +99,7 @@ class PetControllerImplTest {
     this.mockMvc.perform(get("/api/v1/pet/notAdopted")).
       andDo(print()).andExpect(status().isOk()).
       andExpect(jsonPath("$.[0].isAdopted").value(false));
-    verify(petService).findAllNotAdopted();
+    verify(petService, times(1)).findAllNotAdopted();
   }
 
     @ParameterizedTest
@@ -111,7 +112,7 @@ class PetControllerImplTest {
         this.mockMvc.perform(get("/api/v1/pet/{id}", response.id().toString())).
                 andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(request.name()));
-        verify(petService).getById(anyString());
+        verify(petService, times(1)).getById(anyString());
     }
 
     @ParameterizedTest
@@ -123,7 +124,7 @@ class PetControllerImplTest {
         this.mockMvc.perform(get("/api/v1/pet/search").param("name", request.name().substring(0,2))).
                 andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].name").value(request.name()));
-        verify(petService).searchByName(anyString());
+        verify(petService, times(1)).searchByName(anyString());
     }
 
   @ParameterizedTest
@@ -149,7 +150,7 @@ class PetControllerImplTest {
       .andExpect(status().isOk())
       .andExpect(content().json(petUpdatedJson));
 
-    verify(petService).update(anyString(), any(PetDTORequest.class));
+    verify(petService, times(1)).update(anyString(), any(PetDTORequest.class));
   }
 
   @ParameterizedTest
@@ -162,7 +163,7 @@ class PetControllerImplTest {
       .andDo(print())
       .andExpect(status().isNoContent());
 
-    verify(petService).delete(anyString());
+    verify(petService, times(1)).delete(anyString());
   }
 
   @ParameterizedTest
@@ -176,7 +177,7 @@ class PetControllerImplTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.isAdopted").value(true));
 
-    verify(petService).patchStatus(anyString());
+    verify(petService, times(1)).patchStatus(anyString());
   }
 
 }

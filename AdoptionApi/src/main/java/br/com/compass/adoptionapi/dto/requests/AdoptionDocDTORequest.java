@@ -1,5 +1,4 @@
 package br.com.compass.adoptionapi.dto.requests;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

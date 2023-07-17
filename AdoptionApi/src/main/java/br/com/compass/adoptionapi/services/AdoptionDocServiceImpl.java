@@ -10,7 +10,6 @@ import br.com.compass.adoptionapi.repositories.AdoptionDocRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -33,19 +32,22 @@ public class AdoptionDocServiceImpl implements AdoptionDocService{
     AdoptionDoc adoptionDoc = repository.save(new AdoptionDoc(request));
     log.info("SERVICE - updating the isAdopted of the pet to true");
     petClient.patchStatusPet(request.petId());
-    return new AdoptionDocDTOResponse(adoptionDoc);
+    return new AdoptionDocDTOResponse(adoptionDoc, petDTO);
   }
 
   @Override
   public List<AdoptionDocDTOResponse> findAll() {
     log.info("SERVICE - finding all documents");
-  return repository.findAll().stream().map(AdoptionDocDTOResponse::new).toList();
+  return repository.findAll().stream().map(doc ->
+    new AdoptionDocDTOResponse(doc, petClient.getPetById(doc.getPetId().toString()))
+  ).toList();
   }
 
   @Override
   public AdoptionDocDTOResponse findById(String id) {
     log.info("SERVICE - finding pet by id");
-    return repository.findById(UUID.fromString(id)).map(AdoptionDocDTOResponse::new)
+    return repository.findById(UUID.fromString(id)).map(doc ->
+      new AdoptionDocDTOResponse(doc, petClient.getPetById(doc.getPetId().toString())))
             .orElseThrow(() -> new AdoptionDocNotFoundException(String.format("Adoption document not founded by id %s.", id)));
   }
   @Override

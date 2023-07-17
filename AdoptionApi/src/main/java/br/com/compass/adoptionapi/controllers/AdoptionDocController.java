@@ -1,5 +1,4 @@
 package br.com.compass.adoptionapi.controllers;
-
 import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
 import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
 import org.springframework.http.ResponseEntity;
@@ -12,14 +11,14 @@ import java.util.List;
 public interface AdoptionDocController {
 
   @PostMapping
-  public ResponseEntity<AdoptionDocDTOResponse> create(@Validated @RequestBody AdoptionDocDTORequest request);
+   ResponseEntity<AdoptionDocDTOResponse> create(@Validated @RequestBody AdoptionDocDTORequest request);
 
   @GetMapping
-  public ResponseEntity<List<AdoptionDocDTOResponse>> findAll();
+   ResponseEntity<List<AdoptionDocDTOResponse>> findAll();
 
   @GetMapping("/{id}")
-  public ResponseEntity<AdoptionDocDTOResponse> findById(@PathVariable String id);
+   ResponseEntity<AdoptionDocDTOResponse> findById(@PathVariable String id);
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable String id);
+   ResponseEntity<Void> delete(@PathVariable String id);
 }

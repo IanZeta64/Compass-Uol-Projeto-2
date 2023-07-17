@@ -10,7 +10,6 @@ import br.com.compass.petapi.repositories.PetRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -72,7 +71,7 @@ class PetServiceImplTest {
         List<PetDTOResponse> responseList = petService.searchByName(pet.getName().substring(0, 2));
         assertEqualsMethodList(request, responseList);
 
-      verify(petRepository).findByNameIgnoreCaseContaining(any(String.class));
+      verify(petRepository, times(1)).findByNameIgnoreCaseContaining(any(String.class));
     }
 
   @ParameterizedTest
@@ -87,7 +86,7 @@ class PetServiceImplTest {
     assertEqualsMethod(request, response);
     assertDoesNotThrow(() -> PetNotFoundException.class, String.format("Pet not founded by id %s.", pet.getId()));
 
-    verify(petRepository).findById(any(UUID.class));
+    verify(petRepository, times(1)).findById(any(UUID.class));
   }
 
   @ParameterizedTest
@@ -98,7 +97,7 @@ class PetServiceImplTest {
     doThrow(PetNotFoundException.class).when(petRepository).findById(any(UUID.class));
     assertThrows(PetNotFoundException.class, () -> petService.getById(id));
 
-    verify(petRepository).findById(any(UUID.class));
+    verify(petRepository, times(1)).findById(any(UUID.class));
   }
 
   @ParameterizedTest
@@ -128,8 +127,8 @@ class PetServiceImplTest {
     assertEquals(pet.getId(), response.id());
     assertDoesNotThrow(() -> PetNotFoundException.class, String.format("Pet not founded by id %s. Cannot update pet.", pet.getId()));
 
-    verify(petRepository).save(any(Pet.class));
-    verify(petRepository).findById(any(UUID.class));
+    verify(petRepository, times(1)).save(any(Pet.class));
+    verify(petRepository, times(1)).findById(any(UUID.class));
   }
 
   @ParameterizedTest
@@ -142,7 +141,7 @@ class PetServiceImplTest {
     assertThrows(PetNotFoundException.class,
     () -> petService.update(id, petToGetNewInformations));
 
-    verify(petRepository).findById(any(UUID.class));
+    verify(petRepository, times(1)).findById(any(UUID.class));
   }
     @ParameterizedTest
     @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
@@ -152,7 +151,7 @@ class PetServiceImplTest {
         doReturn(List.of(pet)).when(petRepository).findAll();
         List<PetDTOResponse> responseList = petService.findAll();
         assertEqualsMethodList(request, responseList);
-        verify(petRepository).findAll();
+        verify(petRepository, times(1)).findAll();
     }
 
   @ParameterizedTest
@@ -164,7 +163,7 @@ class PetServiceImplTest {
     List<PetDTOResponse> responseList = petService.findAllNotAdopted();
     assertEqualsMethodList(request, responseList);
     assertFalse(responseList.get(0).isAdopted());
-    verify(petRepository).findAllByIsAdoptedFalse();
+    verify(petRepository, times(1)).findAllByIsAdoptedFalse();
   }
 
 
@@ -177,17 +176,17 @@ class PetServiceImplTest {
         doNothing().when(petRepository).delete(any(Pet.class));
         petService.delete(pet.getId().toString());
         assertDoesNotThrow(() -> PetNotFoundException.class, String.format("Pet not founded by id %s. Cannot delete pet.", pet.getId()));
-        verify(petRepository).delete(any(Pet.class));
+        verify(petRepository, times(1)).delete(any(Pet.class));
     }
 
     @ParameterizedTest
     @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
     @DisplayName("Test throw exception on Delete Method")
     void mustThrowExceptionOnDeleteMethod(PetDTORequest request){
-        Pet pet = returnPetWithIdFromRequest(request);
+        String petId = returnPetWithIdFromRequest(request).getId().toString();
         doThrow(PetNotFoundException.class).when(petRepository).findById(any(UUID.class));
-        assertThrows(PetNotFoundException.class, () -> petService.delete(pet.getId().toString()));
-        verify(petRepository).findById(any(UUID.class));
+        assertThrows(PetNotFoundException.class, () -> petService.delete(petId));
+        verify(petRepository, times(1)).findById(any(UUID.class));
     }
     @ParameterizedTest
     @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
@@ -201,8 +200,8 @@ class PetServiceImplTest {
         assertEqualsMethod(request, response);
         assertTrue(response.isAdopted());
         assertDoesNotThrow(() -> PetNotFoundException.class, String.format("Pet not founded by id %s. Cannot delete pet.", pet.getId()));
-        verify(petRepository).findById(any(UUID.class));
-        verify(petRepository).save(any(Pet.class));
+        verify(petRepository,times(1)).findById(any(UUID.class));
+        verify(petRepository, times(1)).save(any(Pet.class));
     }
     @ParameterizedTest
     @MethodSource("br.com.compass.petapi.dummy.DummyPet#generateDTORequests")
@@ -211,7 +210,7 @@ class PetServiceImplTest {
         String id = returnPetWithIdFromRequest(request).getId().toString();
         doThrow(PetNotFoundException.class).when(petRepository).findById(any(UUID.class));
         assertThrows(PetNotFoundException.class, () -> petService.patchStatus(id));
-        verify(petRepository).findById(any(UUID.class));
+        verify(petRepository, times(1)).findById(any(UUID.class));
     }
 
 

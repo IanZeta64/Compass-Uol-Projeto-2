@@ -13,5 +13,5 @@ public interface PetRepositoryFeignClient {
   PetDTO getPetById(@PathVariable String id);
 
   @PatchMapping("/alterAdoptedStatus/{id}")
-  PetDTO patchStatusPet(@PathVariable String id);
+  void patchStatusPet(@PathVariable String id);
 }

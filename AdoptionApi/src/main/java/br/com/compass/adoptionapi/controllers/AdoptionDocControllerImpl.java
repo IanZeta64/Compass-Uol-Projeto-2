@@ -1,5 +1,4 @@
 package br.com.compass.adoptionapi.controllers;
-
 import br.com.compass.adoptionapi.dto.requests.AdoptionDocDTORequest;
 import br.com.compass.adoptionapi.dto.responses.AdoptionDocDTOResponse;
 import br.com.compass.adoptionapi.exceptions.AdoptionDocNotFoundException;
