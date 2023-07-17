@@ -17,16 +17,6 @@ The requirements of this project are to model the domain, the implementation of 
 
 #
 
-## Usage
-Use tools like Insomnia, Postman, or any other HTTP client application to make HTTP requests to the API. Json with endpoints imports is in root of project
-### Pet Api
-- Access the API documentation at [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html) to view and test the available endpoints.
-
-### Adoption Api
-- Access the API documentation at [http://localhost:8082/swagger-ui/index.html](http://localhost:8082/swagger-ui/index.html) to view and test the available endpoints.
-
-#
-
 ## Directories and Packages
 - Controllers -> classes and interfaces for controller http requisitions;
 - Services -> classes and interfaces to validate operations and manage business logic and rules;
@@ -35,6 +25,41 @@ Use tools like Insomnia, Postman, or any other HTTP client application to make H
 - DTO -> classes (record) responsible for managing data transfer between api objects;
 - Enums -> enum using to create entity and response objects;
 - Clients -> classes and interfaces responsible for configuring, connecting, calling and mapping external api requests.
+
+#
+
+## Dependencies
+- jackson-datatype-jsr310: responsible for converting the date and time of the 'java.time' package to JSON;
+- jackson-databind: responsible for facilitating the conversion between JAVA and JSON objects;
+- mockito-core: dependency to create mocks in unit tests;
+- junit-jupiter-api: write unit tests using the JUnit 5 framework;
+- springdoc-openapi-starter-webmvc-ui: automates API generation and documentation using the OpenAPI standard;
+- spring-boot-starter-actuator: Spring Boot dependency that monitor and manage the application at runtime;
+- spring-boot-starter-data-jpa: Spring Boot dependency that simplifies access to relational databases using JPA;
+- h2: integrated relational database, that is, in memory, and lightweight, developed in Java;
+- spring-boot-starter-validation: Spring Boot dependency for data validation in applications, such as data entry validations;
+- spring-boot-starter-web: Spring Boot dependency for building web applications and RESTful services;
+- spring-boot-devtools: offers features to speed up Spring Boot development, such as automatic browser refresh;
+- lombok: reduces repetitive code by generating standard methods through annotations;
+- spring-boot-starter-test: makes it easy to write and run tests in Java applications.
+
+#
+
+## Technologies Used
+- Java;
+- Spring Boot;
+- Spring Data JPA;
+- Spring Cloud;
+- Spring Web;
+- Swagger;
+- Actuator;
+- Mockito;
+- JUnit;
+- H2 Database;
+- Validation;
+- Gateway;
+- Lombok;
+- Spring Test;
 
 #
 
@@ -75,35 +100,87 @@ Use tools like Insomnia, Postman, or any other HTTP client application to make H
 
 #
 
-## Running the project
-- Open IntelliJ;
-- Open the directory 'serverdiscovery/src/main/java';
-- Run the java code 'ServerDiscoveryApplication';
+## Requests and Responses
+### Pet Api
+#### Request
 
+- PetDTORequest{ 
 
-After it is running, you can do the same for the other 3 folders named PetApi, AdoptionApi, gateway by following the same path and running the java code named AdoptionApiApplication, AdoptionDocApplication, and GatewayApplication, respectively for each directory.
+  name*	string
 
-After that, the entire application is connected and functional.
+  pattern: ^[a-zA-Z]+$
 
-You can access the endpoints via insomnia, postman, http or another similar program.
+  gender*	string
 
-#
+  pattern: ^(MALE|FEMALE)+$
 
-## Technologies Used
-- Java;
-- Spring Boot;
-- Spring Data JPA;
-- Spring Cloud;
-- Spring Web;
-- Swagger;
-- Actuator;
-- Mockito;
-- JUnit;
-- H2 Database;
-- Validation;
-- Gateway;
-- Lombok;
-- Spring Test;
+  specie*	string
+
+  pattern: ^(DOG|CAT|OTHER)+$
+
+  birthDate*	string($date)
+
+  }
+
+#### Response
+
+- PetDTOResponse{
+
+  id	string($uuid)
+
+  name	string
+
+  gender	string
+
+  Enum:
+
+  [ MALE, FEMALE ]
+
+  specie	string
+
+  Enum:
+
+  [ DOG, CAT, OTHER ]
+
+  isAdopted	boolean
+
+  birthDate	string($date)
+
+  }
+
+### Adoption Api
+
+#### Request
+
+- AdoptionDocDTORequest{
+
+  petId*	string
+
+  tutorName*	string
+
+  pattern: ^[a-zA-Z]+$
+
+  }
+
+##### Response
+
+- AdoptionDocDTOResponse{
+
+  id	string($uuid)
+
+  tutorName	string
+
+  pet	PetDTO{
+
+  id	string($uuid)
+
+  name	string
+
+  isAdopted	boolean
+
+  birthDate	string($date)
+
+  }
 
 #
 
@@ -125,29 +202,6 @@ For a better user experience, we opted for the H2 relational database, which is 
 
 #
 
-## Dependencies
-- jackson-datatype-jsr310: responsible for converting the date and time of the 'java.time' package to JSON;
-- jackson-databind: responsible for facilitating the conversion between JAVA and JSON objects;
-- mockito-core: dependency to create mocks in unit tests;
-- junit-jupiter-api: write unit tests using the JUnit 5 framework;
-- springdoc-openapi-starter-webmvc-ui: automates API generation and documentation using the OpenAPI standard;
-- spring-boot-starter-actuator: Spring Boot dependency that monitor and manage the application at runtime;
-- spring-boot-starter-data-jpa: Spring Boot dependency that simplifies access to relational databases using JPA;
-- h2: integrated relational database, that is, in memory, and lightweight, developed in Java;
-- spring-boot-starter-validation: Spring Boot dependency for data validation in applications, such as data entry validations;
-- spring-boot-starter-web: Spring Boot dependency for building web applications and RESTful services;
-- spring-boot-devtools: offers features to speed up Spring Boot development, such as automatic browser refresh;
-- lombok: reduces repetitive code by generating standard methods through annotations;
-- spring-boot-starter-test: makes it easy to write and run tests in Java applications.
-
-#
-
-## Server Discovery
-- Eureka server discovery acess by url [http://localhost:8761](http://localhost:8761).
-- Discovers, monitors and balances the microservices registered in this specific discovery server.
-
-#
-
 ## Tests
 ### Pet Api
 - 100% coverage by entity methods, service controller and integration.
@@ -157,10 +211,40 @@ For a better user experience, we opted for the H2 relational database, which is 
 
 #
 
+## Server Discovery
+- Eureka server discovery acess by url [http://localhost:8761](http://localhost:8761).
+- Discovers, monitors and balances the microservices registered in this specific discovery server.
+
+#
+
 ## Gateway
 - Gateway acess by url port 8080.
 - Creates a mask for the microservices connected to it, replacing the fixed address of all services, making them all use port 8080 + the specific url.
 - After it was turned on, the pet-api and adoption-api microservices were being accessed through the port [http://localhost:8080/api/v1/pet/](http://localhost:8080/api/v1/pet/)*  e [http://localhost:8080/api/v1/adoption/](http://localhost:8080/api/v1/adoption/)*
+
+#
+
+## Usage
+Use tools like Insomnia, Postman, or any other HTTP client application to make HTTP requests to the API. Json with endpoints imports is in root of project
+### Pet Api
+- Access the API documentation at [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html) to view and test the available endpoints.
+
+### Adoption Api
+- Access the API documentation at [http://localhost:8082/swagger-ui/index.html](http://localhost:8082/swagger-ui/index.html) to view and test the available endpoints.
+
+#
+
+## Running the project
+- Open IntelliJ;
+- Open the directory 'serverdiscovery/src/main/java';
+- Run the java code 'ServerDiscoveryApplication';
+
+
+After it is running, you can do the same for the other 3 folders named PetApi, AdoptionApi, gateway by following the same path and running the java code named AdoptionApiApplication, AdoptionDocApplication, and GatewayApplication, respectively for each directory.
+
+After that, the entire application is connected and functional.
+
+You can access the endpoints via insomnia, postman, http or another similar program.
 
 #
 
