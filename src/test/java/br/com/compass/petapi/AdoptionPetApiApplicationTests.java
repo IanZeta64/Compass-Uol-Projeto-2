@@ -1,4 +1,4 @@
-package br.com.compass.AdoptionPetAPI;
+package br.com.compass.petapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
